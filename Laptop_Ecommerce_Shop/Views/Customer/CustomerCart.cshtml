@@ -1,0 +1,146 @@
+﻿@model IEnumerable<Laptop_Ecommerce_Shop.CustomerCartDatails>
+
+@{
+    Layout = "~/Views/Shared/_CustomLayout.cshtml";
+
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>The Cart</title>
+
+    <style>
+        body {
+            background-image: url("../assets/images/bg.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center top;
+        }
+
+        .container {
+            /* background-color:  rgba(167, 78, 36, 0.5); */
+            background-color: rgba(255, 255, 255, 0.9);
+            height: auto;
+        }
+
+        .img-style {
+            width: 1.5em;
+        }
+
+        .decrease,
+        .increase,
+        .remove {
+            background: none;
+            border: none;
+        }
+
+        h6, h5 {
+            font-weight: 600;
+            color: rgba(235, 114, 57, 0.5);
+            border-bottom: .25rem solid transparent;
+        }
+
+        label {
+            color: rgba(235, 114, 57, 0.5);
+            border-bottom: .25rem solid transparent;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 1);
+            background-color: rgba(167, 78, 36, 0.74);
+            border-color: rgba(255, 255, 255, 0.74);
+            width: 8em !important;
+        }
+
+            .btn-primary:hover,
+            .btn-primary:focus {
+                color: rgba(255, 255, 255);
+                border-color: rgba(255, 255, 255);
+                background-color: #6c757d;
+                box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
+            }
+
+        .form-check-input:checked {
+            background-color: rgba(0, 0, 0, 0.74);
+            border-color: rgba(0, 0, 0, 0.74);
+        }
+
+        input:focus:required {
+            box-shadow: 0 0 10px 1px rgb(255, 0, 0, 0.5);
+            border: 0.7px solid #FF0000;
+        }
+    </style>
+
+</head>
+
+<body>
+  
+
+    <div class="container">
+        <main>
+            <div class="py-5 text-center">
+                <h1 class="fw-light">Shopping Cart</h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div class="rowClass row mb-6 text-center" style="border-bottom: 0.5px solid black; margin-bottom:15px">
+                        <div class="col-1 themed-grid-col text-muted"></div>
+                        <div class="col-3 themed-grid-col text-muted"><h6>Item Name</h6></div>
+                        <div class="col-2 themed-grid-col text-muted"><h6>Price</h6></div>
+                        <div class="col-3 themed-grid-col text-muted"><h6>Quantity</h6></div>
+                        <div class="col-2 themed-grid-col text-muted"><h6>Total</h6></div>
+                        <div class="col-1 themed-grid-col text-muted"><h6>Edit</h6></div>
+                    </div>
+
+                    <div class="Customeritems">
+                        @foreach (var item in Model)
+                        {
+                            <div class="rowClass row mb-5 text-center">
+                                <div class="col-1 themed-grid-col text-muted">
+                                    <a href="/Customer/DeleteItem/@item.CustomerOrderID"><img class="img-style" src="~/assets/images/x.png" /></a>
+                                </div>
+                                <div class="col-3 themed-grid-col text-muted">
+                                    <h6 class="my-0">@item.ProductName</h6>
+                                    <small class="text-muted">@item.Brand</small>
+                                </div>
+                                <div class="col-2 themed-grid-col text-muted"><span class="text-muted price">$@item.Price</span></div>
+                                <div class="col-3 themed-grid-col text-muted">
+
+                                    <span class="text-muted Quantity">@item.Quantity</span>
+
+                                </div>
+                                <div class="col-2 themed-grid-col text-muted"><span class="text-muted Total">$@item.TotalPrice</span></div>
+                                @*<div class="col-1 themed-grid-col text-muted"><img class="img-style" src="~/assets/images/edit.png" /> @Html.ActionLink("Edit", "ModifyProductDetails", new { id = item.CustomerCartID })</div>*@
+                                <a href="/Customer/ModifyProductDetails/@item.CustomerOrderID" class="col-1 themed-grid-col text-muted"><img class="img-style" src="~/assets/images/edit.png" /></a>
+
+                            </div>
+                        }
+
+                        <div class="rowClass row mb-2">
+                            <div class="col-10 themed-grid-col text-muted text-start">
+                                <h5 class="my-0">Total Price. $@Session["TotalPrice"]</h5>
+                            </div>
+                        </div>
+                        <br />
+
+                        <hr class="my-4">
+                        <a class="btn btn-lg btn-primary" href="/Customer/Checkout">Checkout</a>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+</body>
+
+</html>

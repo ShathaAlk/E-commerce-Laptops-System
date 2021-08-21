@@ -1,0 +1,410 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="Laptop_EcommerceModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="AdminID" />
+          </Key>
+          <Property Name="AdminID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AdminName" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="AdminPassword" Type="varchar" MaxLength="10" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="40" Nullable="false" />
+          <Property Name="Password" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="CustomerName" Type="varchar" MaxLength="20" />
+          <Property Name="Address" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="CustomerOrderTable">
+          <Key>
+            <PropertyRef Name="CustomerOrderID" />
+          </Key>
+          <Property Name="CustomerOrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CustomerID" Type="int" Nullable="false" />
+          <Property Name="ProductID" Type="int" Nullable="false" />
+          <Property Name="Quantity" Type="int" />
+          <Property Name="Purchased" Type="int" />
+          <Property Name="OrderID" Type="int" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderDate" Type="datetime" />
+          <Property Name="CustomerID" Type="int" />
+          <Property Name="TotalOrderPrice" Type="float" />
+        </EntityType>
+        <EntityType Name="ProductItems">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProductName" Type="varchar" MaxLength="15" Nullable="false" />
+          <Property Name="Brand" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Price" Type="float" />
+          <Property Name="image" Type="varbinary(max)" />
+        </EntityType>
+        <Association Name="FK_CustomerCartTable_Customer">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
+          <End Role="CustomerOrderTable" Type="Self.CustomerOrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="CustomerOrderTable">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomerCartTable_Order">
+          <End Role="Order" Type="Self.Order" Multiplicity="0..1" />
+          <End Role="CustomerOrderTable" Type="Self.CustomerOrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="CustomerOrderTable">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomerCartTable_ProductItems">
+          <End Role="ProductItems" Type="Self.ProductItems" Multiplicity="1" />
+          <End Role="CustomerOrderTable" Type="Self.CustomerOrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductItems">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="CustomerOrderTable">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Order_Customer">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Order" Type="Self.Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="CustomerCartProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CustomerOrderProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="int" Mode="In" />
+          <Parameter Name="OrderID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="CustomerProductDetailsProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerCartID" Type="int" Mode="In" />
+        </Function>
+        <EntityContainer Name="Laptop_EcommerceModelStoreContainer">
+          <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerOrderTable" EntityType="Self.CustomerOrderTable" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductItems" EntityType="Self.ProductItems" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_CustomerCartTable_Customer" Association="Self.FK_CustomerCartTable_Customer">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="CustomerOrderTable" EntitySet="CustomerOrderTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomerCartTable_Order" Association="Self.FK_CustomerCartTable_Order">
+            <End Role="Order" EntitySet="Order" />
+            <End Role="CustomerOrderTable" EntitySet="CustomerOrderTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomerCartTable_ProductItems" Association="Self.FK_CustomerCartTable_ProductItems">
+            <End Role="ProductItems" EntitySet="ProductItems" />
+            <End Role="CustomerOrderTable" EntitySet="CustomerOrderTable" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Order_Customer" Association="Self.FK_Order_Customer">
+            <End Role="Customer" EntitySet="Customer" />
+            <End Role="Order" EntitySet="Order" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="Laptop_EcommerceModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Admin">
+          <Key>
+            <PropertyRef Name="AdminID" />
+          </Key>
+          <Property Name="AdminID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AdminName" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="AdminPassword" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Customer">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Email" Type="String" MaxLength="40" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Password" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="Address" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Orders" Relationship="Self.FK_Order_Customer" FromRole="Customer" ToRole="Order" />
+          <NavigationProperty Name="CustomerOrderTables" Relationship="Laptop_EcommerceModel.FK_CustomerCartTable_Customer1" FromRole="Customer" ToRole="CustomerOrderTable" />
+        </EntityType>
+        <EntityType Name="Order">
+          <Key>
+            <PropertyRef Name="OrderID" />
+          </Key>
+          <Property Name="OrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderDate" Type="DateTime" Precision="3" />
+          <Property Name="CustomerID" Type="Int32" />
+          <Property Name="TotalOrderPrice" Type="Double" />
+          <NavigationProperty Name="Customer" Relationship="Self.FK_Order_Customer" FromRole="Order" ToRole="Customer" />
+          <NavigationProperty Name="CustomerOrderTables" Relationship="Laptop_EcommerceModel.FK_CustomerCartTable_Order" FromRole="Order" ToRole="CustomerOrderTable" />
+        </EntityType>
+        <EntityType Name="ProductItem">
+          <Key>
+            <PropertyRef Name="ProductID" />
+          </Key>
+          <Property Name="ProductID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductName" Type="String" MaxLength="15" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Brand" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Price" Type="Double" />
+          <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <NavigationProperty Name="CustomerOrderTables" Relationship="Laptop_EcommerceModel.FK_CustomerCartTable_ProductItems1" FromRole="ProductItem" ToRole="CustomerOrderTable" />
+        </EntityType>
+        <Association Name="FK_Order_Customer">
+          <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
+          <End Role="Order" Type="Self.Order" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Order">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="Laptop_EcommerceEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Admins" EntityType="Self.Admin" />
+          <EntitySet Name="Customers" EntityType="Self.Customer" />
+          <EntitySet Name="Orders" EntityType="Self.Order" />
+          <EntitySet Name="ProductItems" EntityType="Self.ProductItem" />
+          <AssociationSet Name="FK_Order_Customer" Association="Self.FK_Order_Customer">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="Order" EntitySet="Orders" />
+          </AssociationSet>
+          <EntitySet Name="CustomerOrderTables" EntityType="Laptop_EcommerceModel.CustomerOrderTable" />
+          <AssociationSet Name="FK_CustomerCartTable_Customer1" Association="Laptop_EcommerceModel.FK_CustomerCartTable_Customer1">
+            <End Role="Customer" EntitySet="Customers" />
+            <End Role="CustomerOrderTable" EntitySet="CustomerOrderTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomerCartTable_Order" Association="Laptop_EcommerceModel.FK_CustomerCartTable_Order">
+            <End Role="Order" EntitySet="Orders" />
+            <End Role="CustomerOrderTable" EntitySet="CustomerOrderTables" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CustomerCartTable_ProductItems1" Association="Laptop_EcommerceModel.FK_CustomerCartTable_ProductItems1">
+            <End Role="ProductItem" EntitySet="ProductItems" />
+            <End Role="CustomerOrderTable" EntitySet="CustomerOrderTables" />
+          </AssociationSet>
+          <FunctionImport Name="CustomerCartDatails_FN" ReturnType="Collection(Laptop_EcommerceModel.CustomerCartDatails)">
+          <Parameter Name="CustomerID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="CustomerOrderDetails_FN" ReturnType="Collection(Laptop_EcommerceModel.CustomerOrderDetails)">
+            <Parameter Name="CustomerID" Mode="In" Type="Int32" />
+            <Parameter Name="OrderID" Mode="In" Type="Int32" />
+          </FunctionImport>
+        </EntityContainer>
+        <EntityType Name="CustomerOrderTable">
+          <Key>
+            <PropertyRef Name="CustomerOrderID" />
+          </Key>
+          <Property Name="CustomerOrderID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CustomerID" Type="Int32" Nullable="false" />
+          <Property Name="ProductID" Type="Int32" Nullable="false" />
+          <Property Name="Quantity" Type="Int32" />
+          <Property Name="Purchased" Type="Int32" />
+          <Property Name="OrderID" Type="Int32" />
+          <NavigationProperty Name="Customer" Relationship="Laptop_EcommerceModel.FK_CustomerCartTable_Customer1" FromRole="CustomerOrderTable" ToRole="Customer" />
+          <NavigationProperty Name="Order" Relationship="Laptop_EcommerceModel.FK_CustomerCartTable_Order" FromRole="CustomerOrderTable" ToRole="Order" />
+          <NavigationProperty Name="ProductItem" Relationship="Laptop_EcommerceModel.FK_CustomerCartTable_ProductItems1" FromRole="CustomerOrderTable" ToRole="ProductItem" />
+        </EntityType>
+        <Association Name="FK_CustomerCartTable_Customer1">
+          <End Type="Laptop_EcommerceModel.Customer" Role="Customer" Multiplicity="1" />
+          <End Type="Laptop_EcommerceModel.CustomerOrderTable" Role="CustomerOrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Customer">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="CustomerOrderTable">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomerCartTable_Order">
+          <End Type="Laptop_EcommerceModel.Order" Role="Order" Multiplicity="0..1" />
+          <End Type="Laptop_EcommerceModel.CustomerOrderTable" Role="CustomerOrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Order">
+              <PropertyRef Name="OrderID" />
+            </Principal>
+            <Dependent Role="CustomerOrderTable">
+              <PropertyRef Name="OrderID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CustomerCartTable_ProductItems1">
+          <End Type="Laptop_EcommerceModel.ProductItem" Role="ProductItem" Multiplicity="1" />
+          <End Type="Laptop_EcommerceModel.CustomerOrderTable" Role="CustomerOrderTable" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductItem">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="CustomerOrderTable">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="CustomerCartDatails">
+          <Property Type="Int32" Name="CustomerOrderID" Nullable="false" />
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="15" />
+          <Property Type="String" Name="Brand" Nullable="false" MaxLength="10" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="false" />
+          <Property Type="Binary" Name="image" Nullable="true" />
+          <Property Type="Int32" Name="Quantity" Nullable="true" />
+          <Property Type="Double" Name="TotalPrice" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="CustomerOrderDetails">
+          <Property Type="String" Name="ProductName" Nullable="false" MaxLength="15" />
+          <Property Type="String" Name="Brand" Nullable="false" MaxLength="10" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="String" Name="Description" Nullable="false" />
+          <Property Type="Binary" Name="image" Nullable="true" />
+          <Property Type="Int32" Name="Quantity" Nullable="true" />
+          <Property Type="Int32" Name="OrderID" Nullable="true" />
+          <Property Type="Double" Name="TotalOrderPrice" Nullable="true" />
+          <Property Type="DateTime" Name="OrderDate" Nullable="true" Precision="23" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="Laptop_EcommerceModelStoreContainer" CdmEntityContainer="Laptop_EcommerceEntities">
+          <EntitySetMapping Name="Admins">
+            <EntityTypeMapping TypeName="Laptop_EcommerceModel.Admin">
+              <MappingFragment StoreEntitySet="Admin">
+                <ScalarProperty Name="AdminID" ColumnName="AdminID" />
+                <ScalarProperty Name="AdminName" ColumnName="AdminName" />
+                <ScalarProperty Name="AdminPassword" ColumnName="AdminPassword" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Customers">
+            <EntityTypeMapping TypeName="Laptop_EcommerceModel.Customer">
+              <MappingFragment StoreEntitySet="Customer">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Orders">
+            <EntityTypeMapping TypeName="Laptop_EcommerceModel.Order">
+              <MappingFragment StoreEntitySet="Order">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TotalOrderPrice" ColumnName="TotalOrderPrice" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ProductItems">
+            <EntityTypeMapping TypeName="Laptop_EcommerceModel.ProductItem">
+              <MappingFragment StoreEntitySet="ProductItems">
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="image" ColumnName="image" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerOrderTables">
+            <EntityTypeMapping TypeName="Laptop_EcommerceModel.CustomerOrderTable">
+              <MappingFragment StoreEntitySet="CustomerOrderTable">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="Purchased" ColumnName="Purchased" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CustomerOrderID" ColumnName="CustomerOrderID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="CustomerCartDatails_FN" FunctionName="Laptop_EcommerceModel.Store.CustomerCartProcedure">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Laptop_EcommerceModel.CustomerCartDatails">
+                <ScalarProperty Name="CustomerOrderID" ColumnName="CustomerOrderID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="CustomerOrderDetails_FN" FunctionName="Laptop_EcommerceModel.Store.CustomerOrderProcedure">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Laptop_EcommerceModel.CustomerOrderDetails">
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="Quantity" ColumnName="Quantity" />
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
+                <ScalarProperty Name="TotalOrderPrice" ColumnName="TotalOrderPrice" />
+                <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

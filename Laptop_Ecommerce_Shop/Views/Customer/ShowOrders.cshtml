@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Laptop_Ecommerce_Shop.Order>
+
+@{
+    Layout = "~/Views/Shared/_CustomLayout.cshtml";
+   
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <title>The Orders</title>
+
+    <style>
+        body {
+            background-image: url("../assets/images/bg.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center top;
+        }
+
+        .container {
+            /* background-color:  rgba(167, 78, 36, 0.5); */
+            background-color: rgba(255, 255, 255, 0.9);
+            height: auto;
+        }
+
+        h6, h5 {
+            font-weight: 600;
+            color: rgba(235, 114, 57, 0.5);
+            border-bottom: .25rem solid transparent;
+        }
+
+        label {
+            color: rgba(235, 114, 57, 0.5);
+            border-bottom: .25rem solid transparent;
+            font-size: 1em;
+        }
+
+        a.link-class {
+            color: rgba(235, 114, 57, 0.5);
+            text-decoration: none;
+            font-size:12px;
+        }
+
+       
+    </style>
+
+</head>
+
+<body>
+  
+    <div class="container">
+        <main>
+            <div class="py-5 text-center">
+                <h1 class="fw-light">Shopping Cart</h1>
+            </div>
+
+            <div class="row">
+                <div class="col-md-12 col-lg-12">
+                    <div class="rowClass row mb-3 text-center" style="border-bottom: 0.5px solid black; margin-bottom:15px">
+                        <div class="col-4 themed-grid-col text-muted"><h6>Order Date</h6></div>
+                        <div class="col-4 themed-grid-col text-muted"><h6>Total Order Price</h6></div>
+                        <div class="col-4 themed-grid-col text-muted"><h6>Details</h6></div>
+                       
+                    </div>
+
+                    <div class="Customeritems">
+                        @foreach (var item in Model)
+                        {
+                            <div class="rowClass row mb-3 text-center">
+                                
+                                <div class="col-4 themed-grid-col text-muted">
+                                    <span class="text-muted">@item.OrderDate</span>
+                                </div>
+                                <div class="col-4 themed-grid-col text-muted">
+                                    <span class="text-muted Quantity">$@item.TotalOrderPrice</span>
+                                </div>
+                                <div class="col-4 themed-grid-col text-muted"><span class="text-muted"> @Html.ActionLink("Details", "CustomerOrder", new { id = item.OrderID }, new { @class = "link-class" })</span></div>
+                               
+                            </div>
+                        }
+
+                        <br />
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </main>
+    </div>
+
+   
+
+</body>
+
+</html>

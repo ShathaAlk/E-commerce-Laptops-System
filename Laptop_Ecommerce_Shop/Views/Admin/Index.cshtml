@@ -1,0 +1,76 @@
+﻿@model IEnumerable<Laptop_Ecommerce_Shop.ProductItem>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+<h2>The Products List</h2>
+
+@if (Request.Cookies["AdminID"] != null)
+
+{
+    //add check for cookies
+    <text> Welcome @Request.Cookies["AdminName"].Value </text>
+}
+
+
+
+
+
+<p>
+    @Html.ActionLink("Create New", "Create")
+</p>
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.ProductName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Brand)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Description)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Price)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.image)
+        </th>
+        <th></th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.ProductName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Brand)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @{
+                    var base64 = Convert.ToBase64String(item.image);
+                    var imgsrc = string.Format("data:image/gif;base64,{0}", base64);
+                }
+                <img src='@imgsrc' style="max-width:50px; max-height:50px" />
+
+
+            </td>
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id = item.ProductID }) |
+                @Html.ActionLink("Details", "Details", new { id = item.ProductID }) |
+                @Html.ActionLink("Delete", "Delete", new { id = item.ProductID })
+            </td>
+        </tr>
+    }
+
+</table>

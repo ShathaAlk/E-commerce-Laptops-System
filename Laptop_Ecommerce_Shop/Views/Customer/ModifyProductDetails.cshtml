@@ -1,0 +1,85 @@
+﻿@model Laptop_Ecommerce_Shop.CustomerOrderTable
+@{
+    Layout = "~/Views/Shared/_CustomLayout.cshtml";
+
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+   
+    <title>Product Details</title>
+
+    <style>
+        body {
+            background-image: url("../../assets/images/bg.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center top;
+        }
+
+        .btnProducts {
+            color: rgba(255, 255, 255, 1);
+            background-color: rgba(167, 78, 36, 0.74);
+            border-color: rgba(255, 255, 255, 0.74);
+            margin-top: 0.5em;
+        }
+    </style>
+</head>
+
+
+<body>
+
+    <main>
+        <div class="container py-4">
+
+           
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.CustomerOrderID)
+
+                <div class="row bg-light rounded-3 p-5">
+                    <div class="col-md-6">
+                        <div class="h-100 p-5 text-white bg-dark rounded-3">
+                            @{
+                                var item = Model.ProductItem.image;
+                                var base64 = Convert.ToBase64String(item);
+                                var imgsrc = string.Format("data:image/gif;base64,{0}", base64);
+                            }
+
+                            <img class="" width="400" height="300" src='@imgsrc' />
+
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="h-100 p-5 bg-light border rounded-3">
+                            <h2> @Html.DisplayFor(model => model.ProductItem.ProductName)</h2>
+                            <h5>$@Html.DisplayFor(model => model.TotalPricePerItem)</h5>
+                            <small class="text-muted">@Html.DisplayFor(model => model.ProductItem.Brand)</small>
+                            <p>@Html.DisplayFor(model => model.ProductItem.Description)</p>
+                            <h6 class="text-muted">Quantity.  @Html.EditorFor(model => model.Quantity, new { htmlAttributes = new { @class = "" } }) </h6>
+                            <br />
+                            <input type="submit" value="Save" class="btn btn-outline-secondary" />
+
+                        </div>
+                    </div>
+
+                </div>
+            }
+           
+        </div>
+    </main>
+
+
+
+</body>
+</html>
+
+
+

@@ -1,0 +1,198 @@
+﻿@model Laptop_Ecommerce_Shop.Customer
+
+@{
+    Layout = "~/Views/Shared/_CustomLayout.cshtml";
+
+}
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+ 
+    <title>Checkout</title>
+
+    <style>
+        body {
+            background-image: url("../assets/images/bg.jpg");
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+            background-position: center top;
+        }
+
+        .container {
+            /* background-color:  rgba(167, 78, 36, 0.5); */
+            background-color: rgba(255, 255, 255, 0.9);
+        }
+
+        .img-style {
+            width: 1em;
+        }
+
+        .decrease,
+        .increase,
+        .remove {
+            background: none;
+            border: none;
+        }
+
+        h6, h5 {
+            font-weight: 600;
+            color: rgba(235, 114, 57, 0.5);
+            border-bottom: .25rem solid transparent;
+        }
+
+        label {
+            color: rgba(235, 114, 57, 0.5);
+            border-bottom: .25rem solid transparent;
+            font-size: 1em;
+        }
+
+        .btn-primary {
+            font-weight: 500;
+            color: rgba(255, 255, 255, 1);
+            background-color: rgba(167, 78, 36, 0.74);
+            border-color: rgba(255, 255, 255, 0.74);
+            width: 8em !important;
+        }
+
+            .btn-primary:hover,
+            .btn-primary:focus {
+                color: rgba(255, 255, 255);
+                border-color: rgba(255, 255, 255);
+                background-color: #6c757d;
+                box-shadow: 0 0 0 2px rgba(255, 255, 255, 0);
+            }
+
+        .form-check-input:checked {
+            background-color: rgba(0, 0, 0, 0.74);
+            border-color: rgba(0, 0, 0, 0.74);
+        }
+
+        input:focus:required {
+            box-shadow: 0 0 10px 1px rgb(255, 0, 0, 0.5);
+            border: 0.7px solid #FF0000;
+        }
+    </style>
+
+</head>
+
+<body>
+   
+
+    <div class="container">
+        <main>
+            <div class="py-5 text-center">
+                <h1 class="fw-light">Shopping Cart</h1>
+            </div>
+
+            <div class="row">
+
+                <div class="col-md-5 col-lg-5 m-auto">
+                    <h5 class="mb-3">Billing address</h5>
+                    @using (Html.BeginForm("Payment", "Customer", FormMethod.Post, new { @class = "needs-validation" }))
+                    {
+                        @Html.AntiForgeryToken()
+                        @Html.HiddenFor(model => model.CustomerID)
+
+                        <div class="row g-3">
+                            <div class="col-sm-12">
+                                <label for="FullName" class="form-label">Full name</label>
+                                <input type="text" class="form-control" id="FullName" placeholder="" value="@Request.Cookies["CustomerName"].Value" readonly>
+                                <div class="invalid-feedback">
+                                    Valid full name is required.
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="email" class="form-label">Email</label>
+                                <div class="input-group has-validation">
+                                    <input type="email" class="form-control" id="email" placeholder="you@example.com" value="@Session["CustomerEmail"]" readonly>
+                                    <div class="invalid-feedback">
+                                        Please enter a valid email address.
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <label for="address" class="form-label">Address</label>
+                                @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control" } })
+                                @*<input type="text" class="form-control" value='model => model.Price' placeholder="1234 Main St" required>*@
+                                <div class="invalid-feedback">
+                                    Please enter your shipping address.
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <h5 class="mb-3">Payment</h5>
+
+                        <div class="my-3">
+                            <div class="form-check">
+                                <input id="credit" name="paymentMethod" type="radio" class="form-check-input" checked required>
+                                <label class="form-check-label" for="credit">Credit card</label>
+                            </div>
+                            <div class="form-check">
+                                <input id="debit" name="paymentMethod" type="radio" class="form-check-input" required>
+                                <label class="form-check-label" for="debit">Debit card</label>
+                            </div>
+                            <div class="form-check">
+                                <input id="paypal" name="paymentMethod" type="radio" class="form-check-input" required>
+                                <label class="form-check-label" for="paypal">PayPal</label>
+                            </div>
+                        </div>
+
+                        <div class="row gy-3">
+                            <div class="col-md-6">
+                                <label for="cc-name" class="form-label">Name on card</label>
+                                <input type="text" class="form-control" id="cc-name" placeholder="" required>
+                                <small class="text-muted">Full name as displayed on card</small>
+                                <div class="invalid-feedback">
+                                    Name on card is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <label for="cc-number" class="form-label">Credit card number</label>
+                                <input type="text" class="form-control" id="cc-number" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Credit card number is required
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="cc-expiration" class="form-label">Expiration</label>
+                                <input type="text" class="form-control" id="cc-expiration" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Expiration date required
+                                </div>
+                            </div>
+
+                            <div class="col-md-3">
+                                <label for="cc-cvv" class="form-label">CVV</label>
+                                <input type="text" class="form-control" id="cc-cvv" placeholder="" required>
+                                <div class="invalid-feedback">
+                                    Security code required
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+                        <input type="submit" value="Pay" class="btn btn-lg btn-primary" />
+
+                    }
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+   
+
+</body>
+
+</html>

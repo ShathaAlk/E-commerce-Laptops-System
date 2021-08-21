@@ -1,0 +1,68 @@
+﻿@model Laptop_Ecommerce_Shop.ProductItem
+
+@{
+    ViewBag.Title = "Details";
+}
+<style>
+    dt {
+        margin-bottom: 20px
+    }
+</style>
+
+<h2>The Product Details</h2>
+
+<div>
+   
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            Product Name
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.ProductName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Brand)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Brand)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Description)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Description)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Price)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Price)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.image)
+        </dt>
+
+        <dd>
+            @{
+                var item = Model.image;
+                var base64 = Convert.ToBase64String(item);
+                var imgsrc = string.Format("data:image/gif;base64,{0}", base64);
+            }
+            <img src='@imgsrc' style="max-width:150px; max-height:150px" />
+        </dd>
+
+    </dl>
+</div>
+<p>
+    @Html.ActionLink("Edit", "Edit", new { id = Model.ProductID }) |
+    @Html.ActionLink("Back to List", "Index")
+</p>
