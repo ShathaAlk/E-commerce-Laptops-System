@@ -34,12 +34,12 @@
     <EntitySetMapping Name="ProductItems">
       <EntityTypeMapping TypeName="Laptop_EcommerceModel.ProductItem">
         <MappingFragment StoreEntitySet="ProductItems">
+          <ScalarProperty Name="keyFeatures" ColumnName="keyFeatures" />
           <ScalarProperty Name="ProductID" ColumnName="ProductID" />
           <ScalarProperty Name="ProductName" ColumnName="ProductName" />
           <ScalarProperty Name="Brand" ColumnName="Brand" />
           <ScalarProperty Name="Description" ColumnName="Description" />
           <ScalarProperty Name="Price" ColumnName="Price" />
-          <ScalarProperty Name="image" ColumnName="image" />
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
@@ -55,15 +55,38 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="ProductFiles">
+      <EntityTypeMapping TypeName="Laptop_EcommerceModel.ProductFile">
+        <MappingFragment StoreEntitySet="ProductFiles">
+          <ScalarProperty Name="SelectedMainImage" ColumnName="SelectedMainImage" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="FileID" ColumnName="FileID" />
+          <ScalarProperty Name="FileContent" ColumnName="FileContent" />
+          <ScalarProperty Name="FileType" ColumnName="FileType" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="ProductItemsDetails_FN" FunctionName="Laptop_EcommerceModel.Store.ProductItemsDetailsProcedure">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Laptop_EcommerceModel.ProductItemsDetails">
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+          <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Price" ColumnName="Price" />
+          <ScalarProperty Name="Brand" ColumnName="Brand" />
+          <ScalarProperty Name="FileContent" ColumnName="FileContent" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
     <FunctionImportMapping FunctionImportName="CustomerCartDatails_FN" FunctionName="Laptop_EcommerceModel.Store.CustomerCartProcedure">
       <ResultMapping>
         <ComplexTypeMapping TypeName="Laptop_EcommerceModel.CustomerCartDatails">
           <ScalarProperty Name="CustomerOrderID" ColumnName="CustomerOrderID" />
+          <ScalarProperty Name="ProductID" ColumnName="ProductID" />
           <ScalarProperty Name="ProductName" ColumnName="ProductName" />
           <ScalarProperty Name="Brand" ColumnName="Brand" />
           <ScalarProperty Name="Price" ColumnName="Price" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="image" ColumnName="image" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
           <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
         </ComplexTypeMapping>
@@ -72,14 +95,14 @@
     <FunctionImportMapping FunctionImportName="CustomerOrderDetails_FN" FunctionName="Laptop_EcommerceModel.Store.CustomerOrderProcedure">
       <ResultMapping>
         <ComplexTypeMapping TypeName="Laptop_EcommerceModel.CustomerOrderDetails">
+          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
           <ScalarProperty Name="ProductName" ColumnName="ProductName" />
           <ScalarProperty Name="Brand" ColumnName="Brand" />
           <ScalarProperty Name="Price" ColumnName="Price" />
           <ScalarProperty Name="Description" ColumnName="Description" />
-          <ScalarProperty Name="image" ColumnName="image" />
           <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-          <ScalarProperty Name="OrderID" ColumnName="OrderID" />
           <ScalarProperty Name="TotalOrderPrice" ColumnName="TotalOrderPrice" />
+          <ScalarProperty Name="TotalPricePerItem" ColumnName="TotalPricePerItem" />
           <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
         </ComplexTypeMapping>
       </ResultMapping>

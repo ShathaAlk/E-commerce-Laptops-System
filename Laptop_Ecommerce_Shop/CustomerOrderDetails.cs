@@ -13,16 +13,14 @@ namespace Laptop_Ecommerce_Shop
     
     public partial class CustomerOrderDetails
     {
+        public Nullable<int> OrderID { get; set; }
         public string ProductName { get; set; }
         public string Brand { get; set; }
         public Nullable<double> Price { get; set; }
         public string Description { get; set; }
-        public byte[] image { get; set; }
         public Nullable<int> Quantity { get; set; }
-        public Nullable<int> OrderID { get; set; }
         public Nullable<double> TotalOrderPrice { get; set; }
-        public Nullable<double> TotalPricePerItem { get { return (double)Quantity * Price; } }
-
+        public Nullable<double> TotalPricePerItem { get; set; }
         public Nullable<System.DateTime> OrderDate { get; set; }
     }
 }

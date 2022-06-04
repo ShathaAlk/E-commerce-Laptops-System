@@ -4,49 +4,74 @@
     Layout = "~/Views/Shared/_LayoutWithoutHeader.cshtml";
 
 }
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Admin Login</title>
+    <style>
+        .sub-container {
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body class="" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+    <section class="parallax-bg"  data-stellar-background-ratio="0.5">
+        <!-- Section Title -->
+        <div class="container" style="height: 100vh;">
+            <div class="intro-content black-color text-center vertical-section">
+                <div class="vertical-content">
+                    <div class="sub-container glass-effect">
+                        <h4 class="wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.8s">Welcome to aroma</h4>
+                        <h1 class="wow zoomIn m-bottom-20" data-wow-duration="1s" data-wow-delay="0.6s" style="color:#f88d5d !important">E-commerce Laptops</h1>
 
+                        <div>
+                            <h3>Admin Login</h3>
+                            @using (Html.BeginForm("AdminLogin", "Admin", FormMethod.Post, new { @class = "needs-validation", @novalidate = "", @enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
 
-<h2>Admin Login</h2>
-@using (Html.BeginForm("AdminLogin", "Admin", FormMethod.Post))
-{
-    @Html.AntiForgeryToken()
+                        <div class="form-horizontal" style="margin-top:-20px">
 
-    <div class="form-horizontal">
-
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        <div class="form-group">
-            <label class="control-label col-md-2"> Username</label>
-            <div class="col-md-10">
-                @Html.TextBoxFor(model => model.AdminName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AdminName, "", new { @class = "text-danger" })
+                            <hr />
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                            <div class="col-sm-12 contact-form-item wow zoomIn">
+                                <label for="Email" class="form-label">Username</label>
+                                @Html.EditorFor(model => model.AdminName, new { htmlAttributes = new { @class = "form-control", required = ""} })
+                                @*<input type="email" class="form-control" id="Email" required>*@
+                                <div class="invalid-feedback">
+                                    Please enter a valid email address.
+                                </div>
+                            </div>
+                            <div class="col-sm-12 contact-form-item wow zoomIn">
+                                <label for="password" class="form-label">Password</label>
+                                @Html.EditorFor(model => model.AdminPassword, new { htmlAttributes = new { @class = "form-control", required = "", type = "password" } })
+                                @*<input type="password" class="form-control" id="password" required>*@
+                                <div class="invalid-feedback">
+                                    Please enter the password.
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12 text-center">
+                                    @if (TempData["Message"] != null)
+                                    {
+                                        <span class="lblMsg" style="color:darkred">@TempData["Message"].ToString()</span>
+                                    }
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-12">
+                                    <input class="btn btn-main btn-theme" type="submit" value="Login" onclick="SubmitForm()" />
+                                </div>
+                            </div>
+                        </div>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
+
         </div>
-
-        <div class="form-group">
-            <label class="control-label col-md-2"> Password</label>
-
-            <div class="col-md-10">
-                @Html.PasswordFor(model => model.AdminPassword, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.AdminPassword, "", new { @class = "text-danger" })
-            </div>
-        </div>
-        <div class="form-group">
-
-            <div class="col-md-6 text-center">
-                @if (TempData["Message"] != null)
-                {
-                    <span class="lblMsg" style="color:darkred">@TempData["Message"].ToString()</span>
-                }
-            </div>
-        </div>
-
-
-        <div class="form-group">
-            <div class="col-md-offset-2 col-md-10">
-                <input type="submit" value="Login" class="btn btn-default" />
-            </div>
-        </div>
-    </div>
-}
+    </section>
+</body>
+</html>
 

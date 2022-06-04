@@ -18,6 +18,7 @@ namespace Laptop_Ecommerce_Shop
         public ProductItem()
         {
             this.CustomerOrderTables = new HashSet<CustomerOrderTable>();
+            this.ProductFiles = new HashSet<ProductFile>();
         }
     
         public int ProductID { get; set; }
@@ -25,9 +26,11 @@ namespace Laptop_Ecommerce_Shop
         public string Brand { get; set; }
         public string Description { get; set; }
         public Nullable<double> Price { get; set; }
-        public byte[] image { get; set; }
+        public string keyFeatures { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<CustomerOrderTable> CustomerOrderTables { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<ProductFile> ProductFiles { get; set; }
     }
 }

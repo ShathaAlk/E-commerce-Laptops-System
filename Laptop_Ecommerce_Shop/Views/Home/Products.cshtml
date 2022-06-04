@@ -1,0 +1,128 @@
+﻿@model IEnumerable<Laptop_Ecommerce_Shop.ProductItemsDetails>
+
+@{
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>The Products</title>
+    <!--script to stay at the position after clicking button-->
+    <script src="~/assets/js/jquery.min.js"></script>
+    <script src="~/assets/js/retain-position.js"></script>
+</head>
+<body class="p-top-80" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+    <!-- Section Title product -->
+    <div class="section-title-bg text-center">
+        <h2 class="wow fadeInDown no-margin" data-wow-duration="1s" data-wow-delay="0.6s"><strong>Our products</strong></h2>
+        <div class="divider-center-small wow zoomIn" data-wow-duration="1s" data-wow-delay="0.6s"></div>
+        <p class="section-subtitle wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.6s">We add quality products regularly. check them out!</p>
+    </div>
+    <!-- pop-up Message -->
+    <div id="divModal" class="modal">
+        <!-- modal content -->
+        <div class="modal-content">
+            <div class="modal-body justify-content-center text-center">
+                @if (Request.Cookies["CustomerID"] == null)
+                {
+                    <!--Login message-->
+                    @Html.Raw(TempData["LoginMsg"])
+                    <img class="pop-icon" src="~/assets/img/icon/x-mark.png" />
+                    <br />
+                    <span>Please Login first to continue.</span>
+                }
+
+                else
+                {
+                    <!--Product is already added message-->
+                    if (TempData["ProductAdded"] != null)
+                    {
+                        @Html.Raw(TempData["ProductAdded"])
+                        <img class="pop-icon" src="~/assets/img/icon/check-mark.png" />
+                        <br />
+                        <span>It is Already in The Cart.</span>
+                    }
+
+                }
+
+                <br />
+                <span class="btn btn-main btn-theme fadeInUp ok m-top-10">OK</span>
+            </div>
+        </div>
+    </div>
+    <!-- /pop-up Message -->
+    <!--Products section-->
+    <section class="product-index">
+        <!--Container-->
+        <div class="container clearfix">
+            <div class="row">
+                <div class="col-xs-12">
+                    <!-- Widget Search -->
+                    <div class="widget widget-search">
+                        <form action="#" class="search-form" method="get">
+                            <input type="text" name="SearchString" value="@ViewData["SearchFilter"]" />
+                            <input type="submit" class="submit-search" value="Ok">
+                        </form>
+                    </div> <!--End widget-->
+                    <div class="p-top-20">
+                        <!--products-filter-->
+                        <div class="row pf-filter pf-filter-gray text-center list-inline">
+                            <div id="divAll" class="col-lg-2 col-md-2 col-sm-4 iso-button"> @Html.Raw(TempData["divAll"]) @Html.ActionLink("All", "Products", new { brandFilter = "" }, new { @class = "iso-button" })</div>
+                            <div id="divDell" class="col-lg-2 col-md-2 col-sm-4 iso-button"> @Html.Raw(TempData["divDell"]) @Html.ActionLink("Dell", "Products", new { brandFilter = ViewData["Dell"] }, new { @class = "iso-button" }) </div>
+                            <div id="divHP" class="col-lg-2 col-md-2 col-sm-4 iso-button">  @Html.Raw(TempData["divHP"]) @Html.ActionLink("HP", "Products", new { brandFilter = ViewData["HP"] }, new { @class = "iso-button" }) </div>
+                            <div id="divApple" class="col-lg-2 col-md-2 col-sm-4 iso-button">  @Html.Raw(TempData["divApple"])@Html.ActionLink("Apple", "Products", new { brandFilter = ViewData["Apple"] }, new { @class = "iso-button" }) </div>
+                            <div id="divAsus" class="col-lg-2 col-md-2 col-sm-4 iso-button"> @Html.Raw(TempData["divAsus"]) @Html.ActionLink("Asus", "Products", new { brandFilter = ViewData["Asus"] }, new { @class = "iso-button" }) </div>
+                            <div id="divHuawei" class="col-lg-2 col-md-2 col-sm-4 iso-button"> @Html.Raw(TempData["divHuawei"]) @Html.ActionLink("Huawei", "Products", new { brandFilter = ViewData["Asus"] }, new { @class = "iso-button" }) </div>
+                        </div>
+                    </div>
+                    <ul class="pf-filter pf-filter-gray text-center list-inline">
+                    </ul>
+                    <div class="row m-top-10 multi-columns-row">
+                        @foreach (var item in Model)
+                        {
+
+                            var imgBase64 = Convert.ToBase64String(item.FileContent);
+                            var imgsrc = string.Format("data:image/gif;base64,{0}", imgBase64);
+
+                            <!-- === product item 1 === -->
+                            <div class="col-lg-4 col-md-4 col-sm-8 m-bottom-40 @item.Brand">
+                                <div class="product wow zoomIn" data-wow-duration="1s" data-wow-delay="0.7s">
+                                    <div class="product wow fadeInLeft product-post-img" data-wow-duration="1s" data-wow-delay="0.7s">
+                                        <div class="product-media">
+                                            <a href="/Customer/ProductDetails/@item.ProductID"><img style="" src='@imgsrc' alt=""></a>
+                                        </div><!--post media-->
+                                        <div class="product-post-body">
+                                            <img class="img-style company-logo" src="@Url.Content("~/assets/img/company_logo/" + item.Brand + ".png")" />
+                                            <h4>@Html.DisplayFor(modelItem => item.ProductName)</h4>
+                                            <p class="p-bottom-5">@Html.DisplayFor(modelItem => item.Description)</p>
+                                            @*<p style="white-space: pre-line">@item.Description</p>*@
+                                            <div>
+                                                <img class="img-style icon-style" src="~/assets/img/icon/waranty-2.png" /><span>24 months warranty by Manufacturer</span>
+                                            </div>
+                                            <div class="m-bottom-10">
+                                                <a href="/Customer/ProductDetails/@item.ProductID" class="discover-more">Discover More >></a>
+                                            </div>
+                                        </div><!--post body-->
+                                        <div class="row product-post-info clearfix">
+                                            @{
+                                                var SaudiCulture = new System.Globalization.CultureInfo("ar-SA");
+                                                <h4 class="price-style">SAR @string.Format(SaudiCulture, "{0:N}", item.Price)</h4>
+                                            }
+                                            <!--<span class="comments"><a href="~/#"><i class="fa fa-comments"></i> 2 Comments</a></span>-->
+                                            <a href="/Home/AddToCart/@item.ProductID" class=" btn btn-main btn-theme fadeInUp btn-cart small-icon"><img class="icon-style" src="~/assets/img/icon/add-to-basket.png" /></a>
+                                        </div><!--post info-->
+                                    </div>
+                                </div> <!-- /.product -->
+                            </div>
+
+                        }
+                        <!-- /.inner-col -->
+                    </div> <!-- /.inner-row -->
+                </div> <!-- /.col -->
+
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </section><!--End Products section-->  
+</body>
+</html>

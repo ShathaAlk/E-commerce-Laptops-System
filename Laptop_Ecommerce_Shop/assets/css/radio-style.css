@@ -1,0 +1,53 @@
+
+
+.radio-style {
+    margin:0px;
+    display: block;
+    cursor: pointer;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+    .radio-style input {
+        position: relative;
+        left: -9999px;
+    }
+
+        .radio-style input:checked + span {
+            background-color: #fcccb6;
+        }
+
+            .radio-style input:checked + span:before {
+                box-shadow: inset 0 0 0 0.4375em #f88d5d;
+            }
+
+    .radio-style span {
+       
+        float:right;
+        display: flex;
+        align-items: center;
+        height: 50px;
+        padding: 1em 0.70em 1em 1em;
+        border-radius: 99em;
+        transition: 0.25s ease;
+    }
+
+        .radio-style span:hover {
+            background-color: #fcccb6;
+           
+        }
+
+        .radio-style span:before {
+            display: flex;
+            flex-shrink: 0;
+            content: "";
+            background-color: #fff;
+            width: 1.5em;
+            height: 1.5em;
+            border-radius: 50%;
+            margin-right: 0.375em;
+            transition: 0.25s ease;
+            box-shadow: inset 0 0 0 0.125em #f88d5d;
+        }
+
+

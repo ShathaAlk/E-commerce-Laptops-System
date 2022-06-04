@@ -1,102 +1,86 @@
 ﻿@model IEnumerable<Laptop_Ecommerce_Shop.Order>
 
 @{
-    Layout = "~/Views/Shared/_CustomLayout.cshtml";
-   
-}
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
 
+}
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
     <title>The Orders</title>
-
     <style>
-        body {
-            background-image: url("../assets/images/bg.jpg");
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center top;
-        }
-
-        .container {
-            /* background-color:  rgba(167, 78, 36, 0.5); */
-            background-color: rgba(255, 255, 255, 0.9);
-            height: auto;
-        }
-
-        h6, h5 {
-            font-weight: 600;
-            color: rgba(235, 114, 57, 0.5);
-            border-bottom: .25rem solid transparent;
-        }
-
-        label {
-            color: rgba(235, 114, 57, 0.5);
-            border-bottom: .25rem solid transparent;
-            font-size: 1em;
-        }
-
-        a.link-class {
-            color: rgba(235, 114, 57, 0.5);
-            text-decoration: none;
-            font-size:12px;
-        }
-
-       
     </style>
+    <link rel="stylesheet" href="~/assets/vendor/bootstrap/bootstrap.min.css">
+
+    <script data-require="jquery@3.1.1" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="~/assets/js/quantity.js"></script>
 
 </head>
-
-<body>
-  
-    <div class="container">
-        <main>
-            <div class="py-5 text-center">
-                <h1 class="fw-light">Shopping Cart</h1>
-            </div>
-
+<body class="p-top-40" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100" onload="disabledBtnProceed()">
+    <!--Show orders section-->
+    <section class="p-top-80 p-bottom-80">
+        <!--Container-->
+        <div class="container clearfix text-center justify-content-center">
             <div class="row">
-                <div class="col-md-12 col-lg-12">
-                    <div class="rowClass row mb-3 text-center" style="border-bottom: 0.5px solid black; margin-bottom:15px">
-                        <div class="col-4 themed-grid-col text-muted"><h6>Order Date</h6></div>
-                        <div class="col-4 themed-grid-col text-muted"><h6>Total Order Price</h6></div>
-                        <div class="col-4 themed-grid-col text-muted"><h6>Details</h6></div>
-                       
-                    </div>
+                <div class="col-md-12 ">
+                    <!-- Widget -->
+                    <div class="widget">
+                        <!-- Shopping Cart Div -->
+                        <div class="row justify-content-center text-center" id="DivShoppingCart">
+                            <div class="col-md-12">
+                                <div class="section-content bg-white">
+                                    <div class="p-bottom-20">
+                                        <span class="subheading">
+                                            The
+                                        </span>
+                                        <h2>
+                                            Orders
+                                        </h2>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <div class="row mb-0 text-center">
+                                                <div class="col-md-4 themed-grid-col text-muted"><h6>Order Date</h6></div>
+                                                <div class="col-md-4 themed-grid-col text-muted"><h6>Total Order Price</h6></div>
+                                                <div class="col-md-4 themed-grid-col text-muted"><h6>Details</h6></div>
+                                            </div>
+                                            <hr class="">
+                                            <div class="Customeritems">
+                                                @foreach (var item in Model)
+                                                {
+                                                    <div class="row mb-3 text-center">
 
-                    <div class="Customeritems">
-                        @foreach (var item in Model)
-                        {
-                            <div class="rowClass row mb-3 text-center">
-                                
-                                <div class="col-4 themed-grid-col text-muted">
-                                    <span class="text-muted">@item.OrderDate</span>
+                                                        <div class="col-md-4 themed-grid-col text-muted">
+                                                            <span class="text-muted">@item.OrderDate</span>
+                                                        </div>
+                                                        @{
+                                                            var SaudiCulture = new System.Globalization.CultureInfo("ar-SA");
+                                                            <div class="col-md-4 themed-grid-col text-muted">
+                                                                <span class="text-muted Quantity">SAR @string.Format(SaudiCulture, "{0:N}", item.TotalOrderPrice) </span>
+                                                            </div>
+                                                        }
+                                                        <a href="/Customer/CustomerOrder/@item.OrderID" style="padding: 0px 3px !important;"> <img class="icon-cart" src="~/assets/img/icon/maximize.png" /></a>
+                                                    </div>
+                                                    <hr>
+                                                }
+
+
+                                            </div> 
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="col-4 themed-grid-col text-muted">
-                                    <span class="text-muted Quantity">$@item.TotalOrderPrice</span>
-                                </div>
-                                <div class="col-4 themed-grid-col text-muted"><span class="text-muted"> @Html.ActionLink("Details", "CustomerOrder", new { id = item.OrderID }, new { @class = "link-class" })</span></div>
-                               
                             </div>
-                        }
+                        </div>
 
-                        <br />
+                    </div> <!--End widget-->
 
-                    </div>
+                </div> <!-- /.col -->
 
-                </div>
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
 
-            </div>
-
-        </main>
-    </div>
-
-   
+    </section><!--End Show orders section-->
 
 </body>
-
 </html>

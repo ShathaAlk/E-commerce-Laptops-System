@@ -1,80 +1,87 @@
-﻿@model Laptop_Ecommerce_Shop.ProductItem
-
+﻿@model Laptop_Ecommerce_Shop.Models.MultiModelsForProducts
 @{
-    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
-<style>
-   
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Edit</title>
 
-<h2>Edit The Product</h2>
+</head>
+<body class="p-top-50" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+    <!--Edit section-->
+    <section class="p-top-40 p-bottom-40 p">
+        <!--Container-->
+        <div class="container clearfix">
+            <h3>Edit The Product</h3>
+            @using (Html.BeginForm("Edit", "Admin", FormMethod.Post, new { @class = "needs-validation", @novalidate = "", @enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+                <div class="form-horizontal">
+                    <hr />
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    @Html.HiddenFor(model => model.ProductItem.ProductID)
 
+                    <div class="form-group">
+                        <label class="control-label col-lg-2 col-md-2 col-sm-3"> Product Name</label>
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            @Html.EditorFor(model => model.ProductItem.ProductName, new { htmlAttributes = new { @class = "form-control", @Required = "" } })
+                            <span class="invalid-feedback">Please fill  the field.</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductItem.Brand, htmlAttributes: new { @class = "control-label col-lg-2 col-md-2 col-sm-3" })
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            @Html.EditorFor(model => model.ProductItem.Brand, new { htmlAttributes = new { @class = "form-control", @Required = "" } })
+                            <div class="invalid-feedback">Please fill  the field.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductItem.Description, htmlAttributes: new { @class = "control-label col-lg-2 col-md-2 col-sm-3" })
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            @Html.TextAreaFor(model => model.ProductItem.Description, new { cols = 35, @rows = 3, @class = "form-control", @Required = "" })
+                            <div class="invalid-feedback">Please fill  the field.</div>
+                        </div>
+                    </div>
 
-@using (Html.BeginForm("Edit", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
-{
-    @Html.AntiForgeryToken()
-    
-    <div class="form-horizontal">
-        <h4>ProductItem</h4>
-        <hr />
-        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
-        @Html.HiddenFor(model => model.ProductID)
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.ProductName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.ProductName, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Brand, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Brand, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Brand, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.Price, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
-                @Html.ValidationMessageFor(model => model.Price, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-        <div class="form-group">
-            @Html.LabelFor(model => model.image, htmlAttributes: new { @class = "control-label col-md-2" })
-            @*@Html.EditorFor(model => model.image, new { htmlAttributes = new { @class = "form-control" } })*@
-            @Html.HiddenFor(model => model.image)
-            <div class="col-md-10">
-                <input type="file" name="Image1" id="Image1" />
-                @Html.ValidationMessageFor(model => model.image, "", new { @class = "text-danger" })
-            </div>
-        </div>
-
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Save" class="btn btn-default" />
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.ProductItem.Price, htmlAttributes: new { @class = "control-label col-lg-2 col-md-2 col-sm-3" })
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            @Html.EditorFor(model => model.ProductItem.Price, new { htmlAttributes = new { @class = "form-control", @Required = "", @type = "number" } })
+                            <div class="invalid-feedback">Please fill  the field.</div>
+                        </div>
+                    </div>
+                  
+                    <div class="form-group">
+                        <label class="control-label col-lg-2 col-md-2 col-sm-3"> key Features</label>
+                        <div class="col-lg-3 col-md-3 col-sm-4">
+                            @Html.TextAreaFor(model => model.ProductItem.keyFeatures, new { cols = 35, @rows = 5, @class = "form-control", @Required = "" })
+                            <div class="invalid-feedback">Please fill  the field.</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-7 col-md-7 col-sm-10 text-center">
+                            @if (TempData["UpdateMessage"] != null)
+                            {
+                                <h6 style="color:forestgreen">@TempData["UpdateMessage"].ToString()</h6>
+                            }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-7 col-md-7 col-sm-10 text-center">
+                            <input type="submit" value="Save" class="btn btn-main btn-theme" onclick="SubmitForm()" /> |
+                            <a href="/admin/UpdateFiles" class="btn btn-main btn-theme">Next</a>
+                            <small>to update files</small>
+                        </div>
+                    </div>
                 </div>
+            }
+
+            <div>
+                @Html.ActionLink("Back to List", "Index")
             </div>
         </div>
-}
-
-<div>
-    @Html.ActionLink("Back to List", "Index")
-</div>
-
-@section Scripts {
-    @Scripts.Render("~/bundles/jqueryval")
-}
+    </section>
+</body>
+</html>

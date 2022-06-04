@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Web;
 using System.Web.Mvc;
 using Laptop_Ecommerce_Shop;
+using Laptop_Ecommerce_Shop.Models;
 
 namespace Laptop_Ecommerce_Shop.Controllers
 {
@@ -29,17 +31,11 @@ namespace Laptop_Ecommerce_Shop.Controllers
                 using (db)
                 {
                     //Check if the AdminName and the password are available.
-                    var AdminObj = db.Admins.Where(model => model.AdminName.Equals(AdminUser.AdminName) && model.AdminPassword.Equals(AdminUser.AdminPassword)).FirstOrDefault();
-                    if (AdminObj != null)
+                    var AdminInfo = db.Admins.Where(model => model.AdminName.Equals(AdminUser.AdminName) && model.AdminPassword.Equals(AdminUser.AdminPassword)).FirstOrDefault();
+                    if (AdminInfo != null)
                     {
-                        //the cookies contents will be saved for 1 day.
-                        HttpCookie AdminIDCookie = new HttpCookie("AdminID", AdminObj.AdminID.ToString());
-                        HttpCookie AdminNameCookie = new HttpCookie("AdminName", AdminObj.AdminName.ToString());
-                        AdminIDCookie.Expires = DateTime.Now.AddDays(1);
-                        AdminNameCookie.Expires = DateTime.Now.AddDays(1);
-                        Response.Cookies.Add(AdminIDCookie);
-                        Response.Cookies.Add(AdminNameCookie);
-
+                        Session["AdminID"] = AdminInfo.AdminID.ToString();
+                        Session["AdminName"] = AdminInfo.AdminName.ToString();                       
                         return RedirectToAction("Index", "Admin");
                     }
                     else
@@ -54,36 +50,62 @@ namespace Laptop_Ecommerce_Shop.Controllers
         public ActionResult Index()
         {
             //if the Admin cookies does not exist, Index will redirect to AdminLogin view 
-            if(Request.Cookies["AdminID"] == null)
+            if(Session["AdminID"] == null)
             {
                 return View("AdminLogin");
             }
             else
             {
-                return View(db.ProductItems.ToList());
+                List<ProductItemsDetails> productItemDetails = db.ProductItemsDetails_FN().ToList();                
+                return View(productItemDetails);
             }
+        }
+
+        public void ShowFiles(int id)
+        {
+            ProductItem productItem = db.ProductItems.Find(id);
+            //Show product images
+            ViewData["Product images"] = db.ProductFiles.Where(model => model.FileType == "image/jpeg" && model.ProductID == productItem.ProductID).ToList();
+            //Show product video
+            ViewData["Product videos"] = db.ProductFiles.Where(model => model.FileType == "video/mp4" && model.ProductID == productItem.ProductID).ToList();
         }
 
         //Creating CRUD for ProductItem
         // GET: Admin/Details/5
         public ActionResult Details(int? id)
         {
-            if (id == null)
+            if (Session["AdminID"] == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View("AdminLogin");
             }
-            ProductItem productItem = db.ProductItems.Find(id);
-            if (productItem == null)
+            else
             {
-                return HttpNotFound();
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                ProductItem productItem = db.ProductItems.Find(id);
+                if (productItem == null)
+                {
+                    return HttpNotFound();
+                }
+                ShowFiles(productItem.ProductID);
+                return View(productItem);
             }
-            return View(productItem);
+                
         }
 
         // GET: Admin/Create
         public ActionResult Create()
         {
-            return View();
+            if (Session["AdminID"] == null)
+            {
+                return View("AdminLogin");
+            }
+            else
+            {
+                return View();
+            }
         }
 
         // POST: Admin/Create
@@ -91,74 +113,276 @@ namespace Laptop_Ecommerce_Shop.Controllers
         // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create([Bind(Include = "ProductID,ProductName,Brand,Description,Price,image")] ProductItem productItem, HttpPostedFileBase Image1)
-        {
-            if (ModelState.IsValid)
-            {
-                //Add image to the table
-                if (Image1 != null)
+        public ActionResult Create([Bind(Include = "ProductID,ProductName,Brand,Description,Price,image,video,keyFeatures")] ProductItem productItem, ProductFile productFile)
+        {         
+            foreach (var item in productFile.imgFile) {
+                productItem.ProductFiles.Add(new ProductFile()
                 {
-                    productItem.image = new byte[Image1.ContentLength];
-                    Image1.InputStream.Read(productItem.image, 0, Image1.ContentLength);
-                }
-                //Insert the values
-                db.ProductItems.Add(productItem);
-                db.SaveChanges();
-                return RedirectToAction("Index");
+                    FileType = item.ContentType,
+                    FileContent = ConvertToBytes(item),
+                    ProductID = productItem.ProductID,
+                    SelectedMainImage = 0,
+
+                });
             }
-            return View(productItem);
+            try
+            {
+                foreach (var item in productFile.videoFile)
+                {
+                    productItem.ProductFiles.Add(new ProductFile()
+                    {
+                        FileType = item.ContentType,
+                        FileContent = ConvertToBytes(item),
+                        ProductID = productItem.ProductID,
+                        SelectedMainImage = 0,
+
+                    });
+                }
+
+            }
+            catch (Exception)
+            {
+
+            }
+           
+            db.ProductItems.Add(productItem); // parent and its children gets added
+            db.SaveChanges();
+            Session["PID"] = productItem.ProductID;
+            HttpCookie PIDCookie = new HttpCookie("PID", productItem.ProductID.ToString());
+            PIDCookie.Expires = DateTime.Now.AddHours(24);
+            Response.Cookies.Add(PIDCookie);
+            return RedirectToAction("SelectMainImage");
         }
 
-        // GET: Admin/Edit/5
+        //GET: Admin/Create
+        public ActionResult SelectMainImage()
+        {
+            if (Session["AdminID"] == null)
+            {
+                return View("AdminLogin");
+            }
+            else
+            {
+                if (Session["PID"] == null)
+                {
+                    //if there is no cookie, the customer will stay in the Index
+                    return RedirectToAction("Index", "Admin");
+                }
+                else
+                {
+                    int ProductID = Convert.ToInt32(Session["PID"]);
+                    var item = (from d in db.ProductFiles
+                                where ProductID == d.ProductID
+                                select d).ToList();
+                    ShowFiles(ProductID);
+                    return View(item);
+
+                }
+            }            
+        }
+        public ActionResult SelectingMainImage(string SelectedValue)
+        {
+            int SelectedValueNum = Convert.ToInt32(SelectedValue);
+            int PID = Convert.ToInt32(Session["PID"]);
+            var UpdateOldImage = db.ProductFiles.Where(model => model.ProductID == PID && model.SelectedMainImage == 1).FirstOrDefault();
+            var UpdateMainImage = db.ProductFiles.Where(model => model.FileID == SelectedValueNum).FirstOrDefault();
+            var UpdateDefaultImage = db.ProductFiles.Where(model => model.ProductID == PID && model.FileType == "image/jpeg").FirstOrDefault();
+
+            if (ModelState.IsValid)
+            {
+                using (db)
+                {
+                    if(SelectedValue == null)
+                    {
+                        if (UpdateDefaultImage != null)
+                        {
+                            UpdateDefaultImage.FileID = UpdateDefaultImage.FileID;
+                            UpdateDefaultImage.SelectedMainImage = 1;
+                            db.SaveChanges();
+                            TempData["UpdateDefaultMessage"] = "Note: First Image was Selected.";
+                        }
+                    }
+                    else
+                    {
+                        if (UpdateOldImage != null)
+                        {
+                            UpdateOldImage.FileID = UpdateOldImage.FileID;
+                            UpdateOldImage.SelectedMainImage = 0;
+                            db.SaveChanges();
+                        }
+                        if (UpdateMainImage != null)
+                        {
+                            UpdateMainImage.FileID = SelectedValueNum;
+                            UpdateMainImage.SelectedMainImage = 1;
+                            db.SaveChanges();
+                            TempData["SelectImageMessage"] = "<script>divModal.style.display = 'block';</script>";
+                        }
+                    }                          
+                }
+            }
+            return RedirectToAction("Index");
+        }
+       
+            public byte[] ConvertToBytes(HttpPostedFileBase file)
+            {
+                byte[] imageBytes = null;
+                BinaryReader reader = new BinaryReader(file.InputStream);
+                imageBytes = reader.ReadBytes((int)file.ContentLength);
+                return imageBytes;
+            }
+
         public ActionResult Edit(int? id)
         {
-            if (id == null)
+            if (Session["AdminID"] == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View("AdminLogin");
             }
-            ProductItem productItem = db.ProductItems.Find(id);
-            if (productItem == null)
+            else
             {
-                return HttpNotFound();
-            }
-            return View(productItem);
-        }
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                ProductItem productItem = db.ProductItems.Find(id);
+                MultiModelsForProducts model = new MultiModelsForProducts();
+                model.ProductItem = productItem;
+                Session["PID"] = productItem.ProductID;
 
-        // POST: Admin/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details see https://go.microsoft.com/fwlink/?LinkId=317598.
+                return View(model);
+            }                       
+        }
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit([Bind(Include = "ProductID,ProductName,Brand,Description,Price,image")] ProductItem productItem, HttpPostedFileBase Image1)
+        public ActionResult Edit([Bind(Include = "ProductID,ProductName,Brand,Description,Price,keyFeatures")] ProductItem productItem, ProductFile productFile, HttpPostedFileBase file)
+        {          
+            var productFiles = db.ProductFiles.Where(f => f.ProductID == productItem.ProductID && f.FileType == "image/jpeg").ToList();
+            ProductFile UpdateFile = new ProductFile();
+
+            db.Entry(productItem).State = EntityState.Modified;
+            db.SaveChanges();
+            TempData["UpdateMessage"] = "It is updated successfully.";           
+            return View();
+
+        }
+
+        public ActionResult UpdateFiles()
         {
-            if (ModelState.IsValid)
+            if (Session["AdminID"] == null)
             {
-                if (Image1 != null)
+                return View("AdminLogin");
+            }
+            else
+            {
+                ShowFiles(Convert.ToInt32(Session["PID"]));
+                return View();
+            }
+           
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //Update multiple images' files
+        public ActionResult UpdateFiles(ProductFile productFile, HttpPostedFileBase videoFiles)
+        {
+            int PID = Convert.ToInt32(Session["PID"]);
+            var DeleteProductImages = db.ProductFiles.Where(f => f.ProductID == PID && f.FileType == "image/jpeg").ToList();
+            var DeleteProductVideos = db.ProductFiles.Where(f => f.ProductID == PID && f.FileType == "video/mp4").ToList();
+            ProductFile UpdateFile = new ProductFile();
+
+            if (productFile.imgFile != null)
+            {
+                foreach (var pf in DeleteProductImages)
                 {
-                    productItem.image = new byte[Image1.ContentLength];
-                    Image1.InputStream.Read(productItem.image, 0, Image1.ContentLength);
+                    db.ProductFiles.Remove(pf);
+                    db.SaveChanges();
+                }
+               
+            }
+
+            foreach (var item in productFile.imgFile)
+            {
+                productFile.FileType = item.ContentType;
+                productFile.FileContent = ConvertToBytes(item);
+                productFile.ProductID = Convert.ToInt32(Session["PID"]);
+                productFile.SelectedMainImage = 0;
+
+                db.ProductFiles.Add(productFile);
+                db.SaveChanges();
+
+            }
+                       
+            HttpCookie PIDCookie = new HttpCookie("PID", Session["PID"].ToString());
+            PIDCookie.Expires = DateTime.Now.AddHours(24);
+            Response.Cookies.Add(PIDCookie);
+            ShowFiles(Convert.ToInt32(Session["PID"]));
+            TempData["UpdateImageMessage"] = "It is updated successfully.";
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateVideo(ProductFile productFile)
+        {
+            int PID = Convert.ToInt32(Session["PID"]);
+            var DeleteProductVideos = db.ProductFiles.Where(f => f.ProductID == PID && f.FileType == "video/mp4").ToList();
+            ProductFile UpdateFile = new ProductFile();
+            try
+            {
+                if (productFile.videoFile != null)
+            {
+                foreach (var pf in DeleteProductVideos)
+                {
+                    db.ProductFiles.Remove(pf);
+                    db.SaveChanges();
                 }
 
-                db.Entry(productItem).State = EntityState.Modified;
-                db.SaveChanges();
-                return RedirectToAction("Index");
             }
-            return View(productItem);
+                    foreach (var item in productFile.videoFile)
+                    {
+                        productFile.FileType = item.ContentType;
+                        productFile.FileContent = ConvertToBytes(item);
+                        productFile.ProductID = Convert.ToInt32(Session["PID"]);
+                        productFile.SelectedMainImage = 0;
+
+                        db.ProductFiles.Add(productFile);
+                        db.SaveChanges();
+
+                    }
+                }
+                catch (Exception)
+                {
+
+                }
+            
+            Session["PID"] = Session["PID"];
+            HttpCookie PIDCookie = new HttpCookie("PID", Session["PID"].ToString());
+            PIDCookie.Expires = DateTime.Now.AddHours(24);
+            Response.Cookies.Add(PIDCookie);
+            ShowFiles(Convert.ToInt32(Session["PID"]));
+            TempData["UpdateVideoMessage"] = "It is updated successfully.";
+            return RedirectToAction("UpdateFiles");
         }
 
         // GET: Admin/Delete/5
         public ActionResult Delete(int? id)
         {
-            if (id == null)
+            if (Session["AdminID"] == null)
             {
-                return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                return View("AdminLogin");
             }
-            ProductItem productItem = db.ProductItems.Find(id);
-            if (productItem == null)
+            else
             {
-                return HttpNotFound();
-            }
-            return View(productItem);
+                if (id == null)
+                {
+                    return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+                }
+                ProductItem productItem = db.ProductItems.Find(id);
+                if (productItem == null)
+                {
+                    return HttpNotFound();
+                }
+                ShowFiles(productItem.ProductID);
+                return View(productItem);
+            }            
         }
 
         // POST: Admin/Delete/5
@@ -167,6 +391,15 @@ namespace Laptop_Ecommerce_Shop.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             ProductItem productItem = db.ProductItems.Find(id);
+            var productFiles  = db.ProductFiles.Where(f => f.ProductID == productItem.ProductID).ToList();
+            if(productFiles != null)
+            {
+                foreach (var pf in productFiles)
+                {
+                    db.ProductFiles.Remove(pf);
+                }               
+            }
+           
             db.ProductItems.Remove(productItem);
             db.SaveChanges();
             return RedirectToAction("Index");
@@ -181,17 +414,11 @@ namespace Laptop_Ecommerce_Shop.Controllers
             base.Dispose(disposing);
         }
 
-        //Remove the Admin cookies.
+        //Remove the Admin Session.
         public ActionResult Logout()
-        {
-            if (Request.Cookies["AdminID"] != null)
-            {
-                Response.Cookies["AdminID"].Expires = DateTime.Now.AddDays(-1);
-                Response.Cookies["AdminName"].Expires = DateTime.Now.AddDays(-1);
-            }
-
+        {           
+            Session["AdminID"] = null;            
             return View("AdminLogin");
-
         }
     }
 }

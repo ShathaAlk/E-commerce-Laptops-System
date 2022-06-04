@@ -1,75 +1,120 @@
 ﻿@model Laptop_Ecommerce_Shop.ProductItem
-
 @{
-    ViewBag.Title = "Delete";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@{
+    IEnumerable<ProductFile> showImgs = ViewData["Product images"] as IEnumerable<ProductFile>;
+    IEnumerable<ProductFile> showVideos = ViewData["Product videos"] as IEnumerable<ProductFile>;
 }
 
-<style>
-    dt{
-        margin-bottom:20px
-    }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Delete Product</title>
+</head>
+<body class="p-top-50" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+    <!--Delete section-->
+    <section class="p-top-40 p-bottom-40 p">
+        <!--Container-->
+        <div class="container clearfix">
+            <h3>Delete The Product</h3>
+            <h5>Are you sure you want to delete this?</h5>
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
 
-<h2>Delete The Product</h2>
-
-<h3>Are you sure you want to delete this?</h3>
-<div>
-   
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.ProductName)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.ProductName)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Brand)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Brand)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.Price)
-        </dt>
-
-        <dd>
-            @Html.DisplayFor(model => model.Price)
-        </dd>
-
-        <dt>
-            @Html.DisplayNameFor(model => model.image)
-        </dt>
-
-        <dd>
-            @{
-                var item = Model.image;
-                var base64 = Convert.ToBase64String(item);
-                var imgsrc = string.Format("data:image/gif;base64,{0}", base64);
+                <div class="form-actions no-color">
+                    @Html.ActionLink("Back to List", "Index") |
+                    <input type="submit" value="Delete" class="btn btn-main btn-theme" />
+                </div>
             }
-            <img src='@imgsrc' style="max-width:150px; max-height:150px" />
-        </dd>
+            <div class="form-horizontal">
+                <hr />
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label"> Product Name</label>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label"> Brand</label>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label"> Price</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            @Html.DisplayFor(model => model.ProductName, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            @Html.DisplayFor(model => model.Brand, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            @Html.DisplayFor(model => model.Price, new { htmlAttributes = new { @class = "form-control" } })
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">Description</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            @Html.DisplayFor(model => model.Description)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-4">
+                            <label class="control-label">key Features</label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <p style="white-space: pre-line; margin-top:-28px">
+                                @Html.DisplayFor(model => model.keyFeatures)
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
 
-    </dl>
+                    <div class="form-group">
+                        <!--Post-->
+                        <div class="postSingle">
+                            <div class="postMedia m-bottom-40">
+                                <div id="owl-files" class="owl-carousel owl-theme text-center">
+                                    @foreach (var imgs in showImgs)
+                                    {
+                                        var imgBase64 = Convert.ToBase64String(imgs.FileContent);
+                                        var imgsrc = string.Format("data:image/gif;base64,{0}", imgBase64);
+                                        <div>
+                                            <img alt="" src='@imgsrc'>
+                                        </div><!--Post image-->
+                                    }
+                                </div>
+                            </div><!--Post image-->
+                            @foreach (var videos in showVideos)
+                            {
+                                if (videos.FileContent != null)
+                                {
+                                    var vidBase64 = Convert.ToBase64String(videos.FileContent);
+                                    var vidsrc = string.Format("data:video/mp4;base64,{0}", vidBase64);
 
-    @using (Html.BeginForm()) {
-        @Html.AntiForgeryToken()
+                                    <div class="postMedia">
+                                        <video style="width:100%; height:auto;" controls>
+                                            <source src='@vidsrc' type="video/mp4" />
+                                        </video>
+                                    </div><!--Post image-->
+                                }
+                            }
 
-        <div class="form-actions no-color">
-            <input type="submit" value="Delete" class="btn btn-default" /> |
-            @Html.ActionLink("Back to List", "Index")
+                        </div>
+                        <!--End post-->
+                    </div>
+
+                </div>
+            </div>
         </div>
-    }
-</div>
+    </section>
+</body>
+</html>

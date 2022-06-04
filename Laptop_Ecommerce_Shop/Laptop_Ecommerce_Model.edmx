@@ -43,6 +43,16 @@
           <Property Name="CustomerID" Type="int" />
           <Property Name="TotalOrderPrice" Type="float" />
         </EntityType>
+        <EntityType Name="ProductFiles">
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+          <Property Name="FileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FileType" Type="varchar" MaxLength="20" />
+          <Property Name="FileContent" Type="varbinary(max)" />
+          <Property Name="ProductID" Type="int" />
+          <Property Name="SelectedMainImage" Type="int" />
+        </EntityType>
         <EntityType Name="ProductItems">
           <Key>
             <PropertyRef Name="ProductID" />
@@ -52,7 +62,7 @@
           <Property Name="Brand" Type="varchar" MaxLength="10" Nullable="false" />
           <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Price" Type="float" />
-          <Property Name="image" Type="varbinary(max)" />
+          <Property Name="keyFeatures" Type="nvarchar(max)" />
         </EntityType>
         <Association Name="FK_CustomerCartTable_Customer">
           <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
@@ -102,6 +112,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_ProductFiles_ProductItems">
+          <End Role="ProductItems" Type="Self.ProductItems" Multiplicity="0..1" />
+          <End Role="ProductFiles" Type="Self.ProductFiles" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductItems">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductFiles">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Function Name="CustomerCartProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="CustomerID" Type="int" Mode="In" />
         </Function>
@@ -112,11 +134,13 @@
         <Function Name="CustomerProductDetailsProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="CustomerCartID" Type="int" Mode="In" />
         </Function>
+        <Function Name="ProductItemsDetailsProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
         <EntityContainer Name="Laptop_EcommerceModelStoreContainer">
           <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CustomerOrderTable" EntityType="Self.CustomerOrderTable" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ProductFiles" EntityType="Self.ProductFiles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProductItems" EntityType="Self.ProductItems" Schema="dbo" store:Type="Tables" />
           <AssociationSet Name="FK_CustomerCartTable_Customer" Association="Self.FK_CustomerCartTable_Customer">
             <End Role="Customer" EntitySet="Customer" />
@@ -133,6 +157,10 @@
           <AssociationSet Name="FK_Order_Customer" Association="Self.FK_Order_Customer">
             <End Role="Customer" EntitySet="Customer" />
             <End Role="Order" EntitySet="Order" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ProductFiles_ProductItems" Association="Self.FK_ProductFiles_ProductItems">
+            <End Role="ProductItems" EntitySet="ProductItems" />
+            <End Role="ProductFiles" EntitySet="ProductFiles" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -179,8 +207,9 @@
           <Property Name="Brand" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="Price" Type="Double" />
-          <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
           <NavigationProperty Name="CustomerOrderTables" Relationship="Laptop_EcommerceModel.FK_CustomerCartTable_ProductItems1" FromRole="ProductItem" ToRole="CustomerOrderTable" />
+          <Property Name="keyFeatures" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="ProductFiles" Relationship="Laptop_EcommerceModel.FK_ProductFiles_ProductItems" FromRole="ProductItem" ToRole="ProductFile" />
         </EntityType>
         <Association Name="FK_Order_Customer">
           <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
@@ -216,6 +245,12 @@
             <End Role="ProductItem" EntitySet="ProductItems" />
             <End Role="CustomerOrderTable" EntitySet="CustomerOrderTables" />
           </AssociationSet>
+          <EntitySet Name="ProductFiles" EntityType="Laptop_EcommerceModel.ProductFile" />
+          <AssociationSet Name="FK_ProductFiles_ProductItems" Association="Laptop_EcommerceModel.FK_ProductFiles_ProductItems">
+            <End Role="ProductItem" EntitySet="ProductItems" />
+            <End Role="ProductFile" EntitySet="ProductFiles" />
+          </AssociationSet>
+          <FunctionImport Name="ProductItemsDetails_FN" ReturnType="Collection(Laptop_EcommerceModel.ProductItemsDetails)" />
           <FunctionImport Name="CustomerCartDatails_FN" ReturnType="Collection(Laptop_EcommerceModel.CustomerCartDatails)">
           <Parameter Name="CustomerID" Mode="In" Type="Int32" />
           </FunctionImport>
@@ -274,25 +309,56 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ProductFile">
+          <Key>
+            <PropertyRef Name="FileID" />
+          </Key>
+          <Property Name="FileType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+          <Property Name="FileContent" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProductID" Type="Int32" />
+          <NavigationProperty Name="ProductItem" Relationship="Laptop_EcommerceModel.FK_ProductFiles_ProductItems" FromRole="ProductFile" ToRole="ProductItem" />
+          <Property Name="SelectedMainImage" Type="Int32" />
+        </EntityType>
+        <Association Name="FK_ProductFiles_ProductItems">
+          <End Type="Laptop_EcommerceModel.ProductItem" Role="ProductItem" Multiplicity="0..1" />
+          <End Type="Laptop_EcommerceModel.ProductFile" Role="ProductFile" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="ProductItem">
+              <PropertyRef Name="ProductID" />
+            </Principal>
+            <Dependent Role="ProductFile">
+              <PropertyRef Name="ProductID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="ProductItemsDetails">
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
+          <Property Type="String" Name="ProductName" Nullable="true" MaxLength="15" />
+          <Property Type="String" Name="Description" Nullable="false" />
+          <Property Type="Double" Name="Price" Nullable="true" />
+          <Property Type="String" Name="Brand" Nullable="true" MaxLength="10" />
+          <Property Type="Binary" Name="FileContent" Nullable="true" />
+        </ComplexType>
         <ComplexType Name="CustomerCartDatails">
           <Property Type="Int32" Name="CustomerOrderID" Nullable="false" />
+          <Property Type="Int32" Name="ProductID" Nullable="false" />
           <Property Type="String" Name="ProductName" Nullable="false" MaxLength="15" />
           <Property Type="String" Name="Brand" Nullable="false" MaxLength="10" />
           <Property Type="Double" Name="Price" Nullable="true" />
           <Property Type="String" Name="Description" Nullable="false" />
-          <Property Type="Binary" Name="image" Nullable="true" />
           <Property Type="Int32" Name="Quantity" Nullable="true" />
           <Property Type="Double" Name="TotalPrice" Nullable="true" />
         </ComplexType>
         <ComplexType Name="CustomerOrderDetails">
+          <Property Type="Int32" Name="OrderID" Nullable="true" />
           <Property Type="String" Name="ProductName" Nullable="false" MaxLength="15" />
           <Property Type="String" Name="Brand" Nullable="false" MaxLength="10" />
           <Property Type="Double" Name="Price" Nullable="true" />
           <Property Type="String" Name="Description" Nullable="false" />
-          <Property Type="Binary" Name="image" Nullable="true" />
           <Property Type="Int32" Name="Quantity" Nullable="true" />
-          <Property Type="Int32" Name="OrderID" Nullable="true" />
           <Property Type="Double" Name="TotalOrderPrice" Nullable="true" />
+          <Property Type="Double" Name="TotalPricePerItem" Nullable="true" />
           <Property Type="DateTime" Name="OrderDate" Nullable="true" Precision="23" />
         </ComplexType>
       </Schema>
@@ -334,12 +400,12 @@
           <EntitySetMapping Name="ProductItems">
             <EntityTypeMapping TypeName="Laptop_EcommerceModel.ProductItem">
               <MappingFragment StoreEntitySet="ProductItems">
+                <ScalarProperty Name="keyFeatures" ColumnName="keyFeatures" />
                 <ScalarProperty Name="ProductID" ColumnName="ProductID" />
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
                 <ScalarProperty Name="Brand" ColumnName="Brand" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
-                <ScalarProperty Name="image" ColumnName="image" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -355,15 +421,38 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="ProductFiles">
+            <EntityTypeMapping TypeName="Laptop_EcommerceModel.ProductFile">
+              <MappingFragment StoreEntitySet="ProductFiles">
+                <ScalarProperty Name="SelectedMainImage" ColumnName="SelectedMainImage" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="FileID" ColumnName="FileID" />
+                <ScalarProperty Name="FileContent" ColumnName="FileContent" />
+                <ScalarProperty Name="FileType" ColumnName="FileType" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="ProductItemsDetails_FN" FunctionName="Laptop_EcommerceModel.Store.ProductItemsDetailsProcedure">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Laptop_EcommerceModel.ProductItemsDetails">
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
+                <ScalarProperty Name="ProductName" ColumnName="ProductName" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Price" ColumnName="Price" />
+                <ScalarProperty Name="Brand" ColumnName="Brand" />
+                <ScalarProperty Name="FileContent" ColumnName="FileContent" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="CustomerCartDatails_FN" FunctionName="Laptop_EcommerceModel.Store.CustomerCartProcedure">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Laptop_EcommerceModel.CustomerCartDatails">
                 <ScalarProperty Name="CustomerOrderID" ColumnName="CustomerOrderID" />
+                <ScalarProperty Name="ProductID" ColumnName="ProductID" />
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
                 <ScalarProperty Name="Brand" ColumnName="Brand" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="image" ColumnName="image" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="TotalPrice" ColumnName="TotalPrice" />
               </ComplexTypeMapping>
@@ -372,14 +461,14 @@
           <FunctionImportMapping FunctionImportName="CustomerOrderDetails_FN" FunctionName="Laptop_EcommerceModel.Store.CustomerOrderProcedure">
             <ResultMapping>
               <ComplexTypeMapping TypeName="Laptop_EcommerceModel.CustomerOrderDetails">
+                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
                 <ScalarProperty Name="ProductName" ColumnName="ProductName" />
                 <ScalarProperty Name="Brand" ColumnName="Brand" />
                 <ScalarProperty Name="Price" ColumnName="Price" />
                 <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="image" ColumnName="image" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
-                <ScalarProperty Name="OrderID" ColumnName="OrderID" />
                 <ScalarProperty Name="TotalOrderPrice" ColumnName="TotalOrderPrice" />
+                <ScalarProperty Name="TotalPricePerItem" ColumnName="TotalPricePerItem" />
                 <ScalarProperty Name="OrderDate" ColumnName="OrderDate" />
               </ComplexTypeMapping>
             </ResultMapping>

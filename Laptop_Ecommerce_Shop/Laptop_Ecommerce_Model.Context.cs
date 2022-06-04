@@ -32,6 +32,12 @@ namespace Laptop_Ecommerce_Shop
         public virtual DbSet<Order> Orders { get; set; }
         public virtual DbSet<ProductItem> ProductItems { get; set; }
         public virtual DbSet<CustomerOrderTable> CustomerOrderTables { get; set; }
+        public virtual DbSet<ProductFile> ProductFiles { get; set; }
+    
+        public virtual ObjectResult<ProductItemsDetails> ProductItemsDetails_FN()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ProductItemsDetails>("ProductItemsDetails_FN");
+        }
     
         public virtual ObjectResult<CustomerCartDatails> CustomerCartDatails_FN(Nullable<int> customerID)
         {

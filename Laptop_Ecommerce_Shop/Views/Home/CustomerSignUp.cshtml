@@ -1,106 +1,59 @@
 ﻿@model Laptop_Ecommerce_Shop.Customer
 @{
-    Layout = null;
+    Layout = "~/Views/Shared/_LayoutWithoutHeader.cshtml";
 }
-
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-
-    @*<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">*@
-
-    <link href="~/assets/css/style.css" rel="stylesheet">
     <title>Sign Up</title>
-    <!-- CSS -->
-    <style>
-        body {
-            text-align: center;
-            background-image: url("../assets/images/bg.jpg");
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center top;
-        }
-
-        .theForm label {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
-        .theForm {
-            margin: 0 auto;
-            height:360px;
-        }
-
-        .forget {
-            background-color: rgba(255, 255, 255, 0);
-            margin-left: 17em;
-            margin-top: -16em !important;
-        }
-       
-    </style>
-
+    <script data-require="jquery@3.1.1" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 </head>
+<body class="" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+    <section class="parallax-bg" style="background-image: url(../assets/img/bg-.jpg)" data-stellar-background-ratio="0.5">
+        <!-- Section Title -->
+        <div class="container" style="height: 100vh;">
+            <div class="intro-content white-color text-center vertical-section">
+                <div class="vertical-content">
+                    <div class="sub-container sub-height glass-effect">
+                        <h4 class="wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.8s">Welcome to aroma</h4>
+                        <h1 class="wow zoomIn m-bottom-20" data-wow-duration="1s" data-wow-delay="0.6s" style="color:#f88d5d !important">E-commerce Laptops</h1>
 
-<body>
-
-    <section class="py-5 text-center container" style="margin-top:50px">
-        <div class="row py-lg-5">
-            <div class="col-lg-6 col-md-8 mx-auto">
-                <h1 class="fw-light">E-commerce Laptops</h1>
+                        <div>
+                            @using (Html.BeginForm("CustomerSignUp", "Home", FormMethod.Post, new { @class = "needs-validation", @novalidate = "", @enctype = "multipart/form-data" }))
+                            {
+                                @Html.AntiForgeryToken()
+                                <div class="col-sm-12 contact-form-item wow zoomIn">
+                                    <label for="CustomerName" class="form-label">Full Name</label>
+                                    @Html.EditorFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control", required = "" } })
+                                    <div class="invalid-feedback">
+                                        Valid first name is required.
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 contact-form-item wow zoomIn">
+                                    <label for="Email" class="form-label">Email</label>
+                                    @Html.EditorFor(model => model.Email, new { htmlAttributes = new { @class = "form-control", required = "", type = "email" } })
+                                    <div class="invalid-feedback">
+                                        Please enter a valid email address.
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 contact-form-item wow zoomIn">
+                                    <label for="password" class="form-label">Password</label>
+                                    @Html.EditorFor(model => model.Password, new { htmlAttributes = new { @class = "form-control", required = "", type = "password" } })
+                                    <div class="invalid-feedback">
+                                        Please enter the password.
+                                    </div>
+                                </div>
+                                <div class="col-sm-12 contact-form-item">
+                                    <button class="btn btn-main btn-theme wow fadeInUp" onclick="SubmitForm()" type="submit">Sign Up</button>
+                                </div>
+                                <a href="/Home/CustomerLogin" class="float-child"><strong class=""> Already a member?</strong></a>
+                            }
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
-    <br />
-    @using (Html.BeginForm("CustomerSignUp", "Home", FormMethod.Post, new { @class = "theForm" }))
-    {
-        @Html.AntiForgeryToken()
-        <label>
-            Full Name
-            @Html.TextBoxFor(model => model.CustomerName, new { htmlAttributes = new { @class = "form-control" } })
-            @*<input type="text" id="username" required>*@
-        </label>
-        @Html.ValidationMessageFor(model => model.CustomerName, "", new { @class = "lblMsg" })
-        <br />
-        <label>
-            Email Address
-            @Html.TextBoxFor(model => model.Email, new { htmlAttributes = new { @class = "form-control" } })
-            @*<input type="text" id="username" required>*@
-        </label>
-        @Html.ValidationMessageFor(model => model.Email, "", new { @class = "lblMsg" })
-        <br />
-        <label>
-            Password
-            @Html.PasswordFor(model => model.Password, new { @class = "form-control" })
-        </label>
-        @Html.ValidationMessageFor(model => model.Password, "", new { @class = "lblMsg" })
-
-        @*<br />
-            <label>
-                Password
-                @Html.PasswordFor(model => model.ConfirmPassowrd, new { @class = "form-control" })
-            </label>
-            @Html.ValidationMessageFor(model => model.ConfirmPassowrd, "", new { @class = "lblMsg" })*@
-
-        <p><button type="submit">Sign Up</button></p>
-
-        if (TempData["Message"] != null)
-        {
-            <span class="lblMsg">@TempData["Message"].ToString()</span>
-        }
-
-    }
-    <footer class="my-5 pt-5 text-muted text-center text-small">
-        <p class="mb-1" style="margin-top:120px">&copy; 2021 E-commerce Laptops</p>
-    </footer>
-
-    @section Scripts {
-        @Scripts.Render("~/bundles/jqueryval")
-    }
-
 </body>
-
 </html>

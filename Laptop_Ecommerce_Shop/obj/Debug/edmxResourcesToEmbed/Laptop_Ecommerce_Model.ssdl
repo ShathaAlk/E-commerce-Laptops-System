@@ -38,6 +38,16 @@
     <Property Name="CustomerID" Type="int" />
     <Property Name="TotalOrderPrice" Type="float" />
   </EntityType>
+  <EntityType Name="ProductFiles">
+    <Key>
+      <PropertyRef Name="FileID" />
+    </Key>
+    <Property Name="FileID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FileType" Type="varchar" MaxLength="20" />
+    <Property Name="FileContent" Type="varbinary(max)" />
+    <Property Name="ProductID" Type="int" />
+    <Property Name="SelectedMainImage" Type="int" />
+  </EntityType>
   <EntityType Name="ProductItems">
     <Key>
       <PropertyRef Name="ProductID" />
@@ -47,7 +57,7 @@
     <Property Name="Brand" Type="varchar" MaxLength="10" Nullable="false" />
     <Property Name="Description" Type="nvarchar(max)" Nullable="false" />
     <Property Name="Price" Type="float" />
-    <Property Name="image" Type="varbinary(max)" />
+    <Property Name="keyFeatures" Type="nvarchar(max)" />
   </EntityType>
   <Association Name="FK_CustomerCartTable_Customer">
     <End Role="Customer" Type="Self.Customer" Multiplicity="1" />
@@ -97,6 +107,18 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <Association Name="FK_ProductFiles_ProductItems">
+    <End Role="ProductItems" Type="Self.ProductItems" Multiplicity="0..1" />
+    <End Role="ProductFiles" Type="Self.ProductFiles" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductItems">
+        <PropertyRef Name="ProductID" />
+      </Principal>
+      <Dependent Role="ProductFiles">
+        <PropertyRef Name="ProductID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
   <Function Name="CustomerCartProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="CustomerID" Type="int" Mode="In" />
   </Function>
@@ -107,11 +129,13 @@
   <Function Name="CustomerProductDetailsProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
     <Parameter Name="CustomerCartID" Type="int" Mode="In" />
   </Function>
+  <Function Name="ProductItemsDetailsProcedure" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
   <EntityContainer Name="Laptop_EcommerceModelStoreContainer">
     <EntitySet Name="Admin" EntityType="Self.Admin" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Customer" EntityType="Self.Customer" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="CustomerOrderTable" EntityType="Self.CustomerOrderTable" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="Order" EntityType="Self.Order" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="ProductFiles" EntityType="Self.ProductFiles" Schema="dbo" store:Type="Tables" />
     <EntitySet Name="ProductItems" EntityType="Self.ProductItems" Schema="dbo" store:Type="Tables" />
     <AssociationSet Name="FK_CustomerCartTable_Customer" Association="Self.FK_CustomerCartTable_Customer">
       <End Role="Customer" EntitySet="Customer" />
@@ -128,6 +152,10 @@
     <AssociationSet Name="FK_Order_Customer" Association="Self.FK_Order_Customer">
       <End Role="Customer" EntitySet="Customer" />
       <End Role="Order" EntitySet="Order" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ProductFiles_ProductItems" Association="Self.FK_ProductFiles_ProductItems">
+      <End Role="ProductItems" EntitySet="ProductItems" />
+      <End Role="ProductFiles" EntitySet="ProductFiles" />
     </AssociationSet>
   </EntityContainer>
 </Schema>

@@ -1,0 +1,128 @@
+﻿@model Laptop_Ecommerce_Shop.ProductItem
+
+@{
+    Layout = "~/Views/Shared/_CustomerLayout.cshtml";
+}
+@{
+
+    //CustomerOrderTable COTs = ViewData["Cart Info"] as CustomerOrderTable;
+    IEnumerable<ProductFile> showImgs = ViewData["Product images"] as IEnumerable<ProductFile>;
+    IEnumerable <ProductFile> showVideos = ViewData["Product videos"] as IEnumerable<ProductFile>;
+
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Product Details</title>
+    <script data-require="jquery@3.1.1" data-semver="3.1.1" src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="~/assets/js/quantity.js"></script>
+    
+</head>
+<body class="p-top-50" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+    <!--product single section-->
+    <section id="product-single" class="p-top-20 p-bottom-80">
+
+        <!--Container-->
+        <div class="container clearfix">
+            @using (Html.BeginForm())
+            {
+                @Html.AntiForgeryToken()
+
+
+                <div class="row">
+                    <div class="col-lg-8 col-md-8 col-sm-12">
+                        <!--Post-->
+                        <div class="postSingle">
+                            <div class="postMedia m-bottom-40">
+                                <div id="owl-files" class="owl-carousel owl-theme text-center">
+                                    @foreach (var imgs in showImgs)
+                                    {
+                                        var imgBase64 = Convert.ToBase64String(imgs.FileContent);
+                                        var imgsrc = string.Format("data:image/gif;base64,{0}", imgBase64);
+                                        <div>
+                                            <img alt="" src='@imgsrc'>
+                                        </div><!--Post image-->
+                                    }
+                                </div>
+                            </div><!--Post image-->
+                         
+                            @foreach (var videos in showVideos)
+                            {
+                                if (videos.FileContent != null)
+                                {
+                                    var vidBase64 = Convert.ToBase64String(videos.FileContent);
+                                    var vidsrc = string.Format("data:video/mp4;base64,{0}", vidBase64);
+
+                                    <div class="postMedia">
+                                        <video style="width:100%; height:auto;" controls>
+                                            <source src='@vidsrc' type="video/mp4" />
+                                        </video>
+                                    </div><!--Post image-->
+                                }
+                            }
+
+                        </div>
+                        <!--End post-->
+                    </div> <!-- /.col -->
+
+                    <div class="col-lg-4 col-md-4 col-sm-12 sidebar p-top-30">
+                        <!-- Widget -->
+                        <div class="widget ">
+                            <div class="">
+                                <img class="img-style company-logo" src="@Url.Content("~/assets/img/company_logo/"+@Html.DisplayFor(model => model.Brand)+".png")" />
+                                <div class="" style="display:inline-block !important">
+                                    <h4>@Html.DisplayFor(model => model.ProductName)</h4>
+                                </div>
+                                <p class="p-bottom-5">@Html.DisplayFor(model => model.Description)</p>
+                                <div class="">
+                                    <img class="img-style icon-style" src="~/assets/img/icon/waranty-2.png" /><span>24 months warranty by Manufacturer</span>
+                                </div>
+                            </div><!--post body-->
+                            <hr />
+                            <div class="row">
+                                <h4 class=" price-style">SAR @TempData["TotalPricePerItem"] </h4>
+                                @using (Html.BeginForm())
+                                {
+
+                                    <span class="quantity buttons_added">
+                                        <input type="button" value="-" class="minus"><input type="number" step="1" min="1" max="" name="quantity" value="@TempData["CustomerProductQuantity"]" title="Qty" class="input-text qty text" size="4" pattern="" inputmode=""><input type="button" value="+" class="plus">
+                                    </span>
+
+                                    <button class="col-4 btn btn-main btn-theme fadeInUp btn-cart small-icon" type="submit"><img class="icon-style" src="~/assets/img/icon/add-to-basket.png" /></button>
+                                }
+                            </div><!--post info-->
+                        </div> <!--End widget-->
+                        <!-- Widget 2 -->
+                        <div class="widget">
+                            <h4>Key Features</h4>
+                            <p class="key" style="white-space: pre-line">
+                                @Html.DisplayFor(model => model.keyFeatures)
+
+                            </p>
+                        </div> <!--End widget-->
+                        <!--Widget 3-->
+                        <div class="widget">
+                            <img class="img-style company-logo" src="~/assets/img/icon/waranty-2.png" />
+                            <div class="" style="display:inline-block !important">
+                                <h4>Genuine & Warranted</h4>
+                            </div>
+
+                            <p>All listed electronics are genuine and warranted by an authorized service provider for a minimum of two years (in compliance with our Terms & Conditions).</p>
+                        </div> <!--End widget-->
+
+                    </div> <!-- /.col -->
+
+                </div> <!-- /.row -->
+            }
+        </div> <!-- /.container -->
+
+
+    </section><!--End product single section-->
+    <!-- Start Intro -->
+    <!-- End Intro -->
+ 
+</body>
+</html>
+
+

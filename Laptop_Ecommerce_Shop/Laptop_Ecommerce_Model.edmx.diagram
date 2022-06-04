@@ -14,6 +14,8 @@
         <AssociationConnector Association="Laptop_EcommerceModel.FK_CustomerCartTable_Customer1" />
         <AssociationConnector Association="Laptop_EcommerceModel.FK_CustomerCartTable_Order" />
         <AssociationConnector Association="Laptop_EcommerceModel.FK_CustomerCartTable_ProductItems1" />
+        <EntityTypeShape EntityType="Laptop_EcommerceModel.ProductFile" Width="1.5" PointX="0.75" PointY="5" />
+        <AssociationConnector Association="Laptop_EcommerceModel.FK_ProductFiles_ProductItems" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

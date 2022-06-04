@@ -40,8 +40,9 @@
     <Property Name="Brand" Type="String" MaxLength="10" FixedLength="false" Unicode="false" Nullable="false" />
     <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
     <Property Name="Price" Type="Double" />
-    <Property Name="image" Type="Binary" MaxLength="Max" FixedLength="false" />
     <NavigationProperty Name="CustomerOrderTables" Relationship="Laptop_EcommerceModel.FK_CustomerCartTable_ProductItems1" FromRole="ProductItem" ToRole="CustomerOrderTable" />
+    <Property Name="keyFeatures" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="ProductFiles" Relationship="Laptop_EcommerceModel.FK_ProductFiles_ProductItems" FromRole="ProductItem" ToRole="ProductFile" />
   </EntityType>
   <Association Name="FK_Order_Customer">
     <End Role="Customer" Type="Self.Customer" Multiplicity="0..1" />
@@ -77,6 +78,12 @@
       <End Role="ProductItem" EntitySet="ProductItems" />
       <End Role="CustomerOrderTable" EntitySet="CustomerOrderTables" />
     </AssociationSet>
+    <EntitySet Name="ProductFiles" EntityType="Laptop_EcommerceModel.ProductFile" />
+    <AssociationSet Name="FK_ProductFiles_ProductItems" Association="Laptop_EcommerceModel.FK_ProductFiles_ProductItems">
+      <End Role="ProductItem" EntitySet="ProductItems" />
+      <End Role="ProductFile" EntitySet="ProductFiles" />
+    </AssociationSet>
+    <FunctionImport Name="ProductItemsDetails_FN" ReturnType="Collection(Laptop_EcommerceModel.ProductItemsDetails)" />
     <FunctionImport Name="CustomerCartDatails_FN" ReturnType="Collection(Laptop_EcommerceModel.CustomerCartDatails)">
       <Parameter Name="CustomerID" Mode="In" Type="Int32" />
     </FunctionImport>
@@ -135,25 +142,56 @@
       </Dependent>
     </ReferentialConstraint>
   </Association>
+  <EntityType Name="ProductFile">
+    <Key>
+      <PropertyRef Name="FileID" />
+    </Key>
+    <Property Name="FileType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" />
+    <Property Name="FileContent" Type="Binary" MaxLength="Max" FixedLength="false" />
+    <Property Name="FileID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ProductID" Type="Int32" />
+    <NavigationProperty Name="ProductItem" Relationship="Laptop_EcommerceModel.FK_ProductFiles_ProductItems" FromRole="ProductFile" ToRole="ProductItem" />
+    <Property Name="SelectedMainImage" Type="Int32" />
+  </EntityType>
+  <Association Name="FK_ProductFiles_ProductItems">
+    <End Type="Laptop_EcommerceModel.ProductItem" Role="ProductItem" Multiplicity="0..1" />
+    <End Type="Laptop_EcommerceModel.ProductFile" Role="ProductFile" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="ProductItem">
+        <PropertyRef Name="ProductID" />
+      </Principal>
+      <Dependent Role="ProductFile">
+        <PropertyRef Name="ProductID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <ComplexType Name="ProductItemsDetails">
+    <Property Type="Int32" Name="ProductID" Nullable="false" />
+    <Property Type="String" Name="ProductName" Nullable="true" MaxLength="15" />
+    <Property Type="String" Name="Description" Nullable="false" />
+    <Property Type="Double" Name="Price" Nullable="true" />
+    <Property Type="String" Name="Brand" Nullable="true" MaxLength="10" />
+    <Property Type="Binary" Name="FileContent" Nullable="true" />
+  </ComplexType>
   <ComplexType Name="CustomerCartDatails">
     <Property Type="Int32" Name="CustomerOrderID" Nullable="false" />
+    <Property Type="Int32" Name="ProductID" Nullable="false" />
     <Property Type="String" Name="ProductName" Nullable="false" MaxLength="15" />
     <Property Type="String" Name="Brand" Nullable="false" MaxLength="10" />
     <Property Type="Double" Name="Price" Nullable="true" />
     <Property Type="String" Name="Description" Nullable="false" />
-    <Property Type="Binary" Name="image" Nullable="true" />
     <Property Type="Int32" Name="Quantity" Nullable="true" />
     <Property Type="Double" Name="TotalPrice" Nullable="true" />
   </ComplexType>
   <ComplexType Name="CustomerOrderDetails">
+    <Property Type="Int32" Name="OrderID" Nullable="true" />
     <Property Type="String" Name="ProductName" Nullable="false" MaxLength="15" />
     <Property Type="String" Name="Brand" Nullable="false" MaxLength="10" />
     <Property Type="Double" Name="Price" Nullable="true" />
     <Property Type="String" Name="Description" Nullable="false" />
-    <Property Type="Binary" Name="image" Nullable="true" />
     <Property Type="Int32" Name="Quantity" Nullable="true" />
-    <Property Type="Int32" Name="OrderID" Nullable="true" />
     <Property Type="Double" Name="TotalOrderPrice" Nullable="true" />
+    <Property Type="Double" Name="TotalPricePerItem" Nullable="true" />
     <Property Type="DateTime" Name="OrderDate" Nullable="true" Precision="23" />
   </ComplexType>
 </Schema>

@@ -1,115 +1,321 @@
 ﻿@model IEnumerable<Laptop_Ecommerce_Shop.ProductItem>
 
 @{
-    Layout = null;
+    Layout = "~/Views/Shared/_HomeLayout.cshtml";
 }
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
-    <link href="~/assets/css/style.css" rel="stylesheet">
-    <title>E-commerce Laptops</title>
-
-    <style>
-        body {
-            background-image: url("../assets/images/bg.jpg");
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            background-size: cover;
-            background-position: center top;
-        }
-
-        .btnProducts {
-            color: rgba(255, 255, 255, 1);
-            background-color: rgba(167, 78, 36, 0.74);
-            border-color: rgba(255, 255, 255, 0.74);
-            margin-top: 0.5em;
-        }
-    </style>
+    <title>Aroma</title>  
 </head>
-<body>
-    @Html.Raw(TempData["msg"])
-    <main>
-        <header class="mb-auto">
-            <div>
-                <nav class="nav nav-masthead justify-content-center float-md-end">
-                    <a class="nav-link" href="/Home/Index">Home</a>
-                    @if (Request.Cookies["CustomerID"] == null)
-                    {
-                        <a class="nav-link" href="/Home/CustomerSignUp">Sign Up</a>
-                        <a class="nav-link" href="/Home/CustomerLogin">login</a>
-
-                    }
-                    else
-                    {
-                        <a class="nav-link" href="/Customer/ShowOrders">My Orders</a>
-                        <a class="nav-link" href="/Home/Logout">Logout</a>
-                    }
-
-
-                </nav>
-            </div>
-            <div class="cartNums">
-                <a href="/Customer/CustomerCart" style="text-decoration: none;"><img style="width: 35px;" src="~/assets/images/shopping-cart.png" alt=""><span style="color:black">  @TempData["CartNum"] </span></a>
-            </div>
-        </header>
-
-
-        <section class="py-5 text-center container" style="margin-top:-80px">
-            <div class="row py-lg-5">
-                <div class="col-lg-6 col-md-8 mx-auto">
-                    <h1 class="fw-light">E-commerce Laptops</h1>
-                    <p class="lead text-muted" style="color: white !important; font-weight: 350;">Here you find all the premium laptops you need and you can buy them in a smooth and safe way without any hassles with a two-year warranty.</p>
+<body class="homepage_parallax" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+    <!-- Start Intro -->
+    <section id="home" class="parallax-bg" style="background-image: url(../assets/img/bg1.jpg)" data-stellar-background-ratio="0.5">
+        <!-- Section Title -->
+        <div class="js-height-full container">
+            <div class="intro-content white-color text-center vertical-section">
+                <div class="vertical-content">
+                    <h4 class="wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.8s">Welcome to aroma</h4>
+                    <h1 class="wow zoomIn m-bottom-20" data-wow-duration="1s" data-wow-delay="0.6s">E-commerce Laptops</h1>
+                    <a href="/Home/Products" class="btn btn-main btn-theme wow fadeInUp" data-wow-delay="0.8s">View products</a>
                 </div>
             </div>
-        </section>
+            <!-- Scroll Down -->
+            <div class="scroll-next">
+                <a data-scroll href="~/#services" class="scroll-down"><i class="fa fa-angle-down scroll-down-icon"></i></a>
+            </div>
+            <!-- End Scroll Down -->
+        </div>
+    </section>
+    <!-- End Intro -->
+    <!-- Start Services -->
+    <section id="services" class="p-top-80 p-bottom-40">
+        <div class="container">
+            <div class="row">
+                <!-- Service Item 1 -->
+                <div class="col-md-4 m-bottom-20">
+                    <div class="service service-type-2 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.6s">
+                        <div class="service-header clearfix">
+                            <div class="service-icon pull-left">
+                                <i class="fa fa-laptop" aria-hidden="true"></i>
+                            </div>
+                            <h4>Branding</h4>
+                        </div>
+                        <div class="service-text">
+                            <p>We have a lot of laptops with strong brands such as Dell, Apple, Huawei and etc.</p>
+                        </div>
+                    </div>
+                </div> <!-- /.col -->
+                <!-- Service Item 2 -->
+                <div class="col-md-4 m-bottom-20">
+                    <div class="service service-type-2 wow fadeIn" data-wow-duration="1s" data-wow-delay="0.8s">
+                        <div class="service-header clearfix">
+                            <div class="service-icon pull-left">
+                                <i class="fa fa-rocket" aria-hidden="true"></i>
+                            </div>
+                            <h4>Fast Delivery</h4>
+                        </div>
+                        <div class="service-text">
+                            <p>Our products reach you as soon as possible within two days inside the Kingdom of Saudi Arabia and less than a week outside it.</p>
+                        </div>
+                    </div>
+                </div> <!-- /.col -->
+                <!-- Service Item 3 -->
+                <div class="col-md-4 m-bottom-20">
+                    <div class="service service-type-2 wow fadeIn" data-wow-duration="1s" data-wow-delay="1s">
+                        <div class="service-header clearfix">
+                            <div class="service-icon pull-left">
+                                <i class="fa fa-comments-o" aria-hidden="true"></i>
+                            </div>
+                            <h4>24/7 Support</h4>
+                        </div>
+                        <div class="service-text">
+                            <p>You can contact us at any time you want. Do not be hesitate always at your service.</p>
+                        </div>
+                    </div>
+                </div> <!-- /.col -->
 
-        <div class="album py-5 parentContainer">
-            <div class="container" id="containerDiv">
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
-                    @foreach (var item in Model)
-                    {
-                        <div class="col">
-                            <div class="card shadow-sm">
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </section>
+    <!-- End Services -->
+    <!-- Start About -->
+    <section id="about" class="light-bg p-top-80 p-bottom-40">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-7 col-md-8 col-sm-12 m-bottom-30 wow zoomIn" data-wow-duration="1s" data-wow-delay="0.6s">
+                    <video class="vid-responsive" controls autoplay="autoplay" loop>
+                        <source src="~/assets/img/about_vid.mp4" type=video/mp4>
+                    </video>
+                </div> <!-- /.col -->
+                <div class="col-lg-5 col-md-4 col-sm-12">
+                    <!-- Section Title -->
+                    <div class="m-bottom-30">
+                        <h2 class="wow fadeIn" data-wow-duration="1s" data-wow-delay="0.6s">About Us</h2>
+                        <div class="divider-small wow zoomIn" data-wow-duration="1s" data-wow-delay="0.7s"></div>
+                    </div>
+                    <div class="wow zoomIn" data-wow-duration="1s" data-wow-delay="0.6s">
+                        <p>At Aroma, you find all the premium laptops you need and you can buy them in a smooth and safe way without any hassles with a two-year warranty.</p>
+                        <p>In addition, all that you see is hand-picked and 100% true – sourced straight from the best brands and their approved affiliates from the US and over the world, only for you.</p>
+                    </div>
+                    <a data-scroll href="~/#contact" class="m-top-30 btn btn-main btn-theme wow fadeInUp" data-wow-delay="0.7s">Contact Us</a>
+                </div> <!-- /.col -->
 
-                                @{
-                                    var base64 = Convert.ToBase64String(item.image);
-                                    var imgsrc = string.Format("data:image/gif;base64,{0}", base64);
-                                }
-                                <img src='@imgsrc' class="bd-placeholder-img card-img-top" style="width:80%; height:200px" />
-                                <div class="card-body">
-                                    <p class="card-text"> @Html.DisplayFor(modelItem => item.ProductName)</p>
-                                    <small class="text-muted"> @Html.DisplayFor(modelItem => item.Brand)</small>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <div class="btn-group">
-                                            @*<a href="/Customer/ViewProduct/@item.ProductID" class="btn btn-sm btn-outline-secondary btnProducts">View</a>*@
-                                            <a href="/Customer/AddToCart/@item.ProductID" class="btn btn-sm btn-outline-secondary btnProducts">Add to Cart</a>
-                                        </div>
-                                        <small class="text-muted"> @Html.DisplayFor(modelItem => item.Price) $</small>
-                                    </div>
-                                </div>
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </section>
+    <!-- End About -->
+    <!-- Start New Sale -->
+    <section id="newSale" class=" p-top-80 p-bottom-80">
+        <div class="container">
+            <div class="row">
+                <!-- Section Title -->
+                <div class="section-title text-center m-bottom-30">
+                    <h2 class="wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.6s">Newest Sales</h2>
+                    <div class="divider-center-small wow zoomIn" data-wow-duration="1s" data-wow-delay="0.6s"></div>
+                    <p class="section-subtitle wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.6s"><em class="">Check our newest product.</em></p>
+                </div>
+                <!-- === newest sale Form === -->
+                <div class="col-lg-7 col-md-12 col-sm-12 p-bottom-30">
+                    <div class="newest-form row">
+                        <div class="col-sm-12 contact-form-item wow zoomIn">
+                            <img src="~/assets/img/laptops/Surface_Laptop Go_01.jpg" alt="newest-sale" class="img-responsive wow fadeInLeft" style="" data-wow-duration="1s" data-wow-delay="0.6s" />
+                        </div>
+                    </div> <!-- /.newest sale-form & inner row -->
+                </div> <!-- /.col -->
+                <!-- === newest sale Information === -->
+                <div class="col-lg-5 col-md-12 col-sm-12">
+                    <div class="newest-info">
+                        <!-- === Details === -->
+                        <div class="m-top-20 wow zoomIn">
+                            <div class="newest-info-title"> Microsoft | Surface Go </div>
+                            <div class="sub-info-title"> Every Day, Everywhere </div>
+                            <div class="newest-info-text">
+                                Get the most out of every day by getting the authored look
+                            </div>
+                            <div class="sub-info-title"> Stylish Design and Great Value </div>
+                            <div class="newest-info-text">
+                                See and do more on the 12.45" touchscreen, unique premium materials and a selection of colours, all at an exceptional value.
+                            </div>
+                            <div class="sub-info-title"> The Lightest Surface Laptop </div>
+                            <div class="newest-info-text">
+                                Get all your style, advanced performance and all-day battery life, at an exceptional value.
+                            </div>
+                        </div>
+                    </div>
+                </div> <!-- /.col -->
+                <!-- === newest sale Form === -->
+                <div class="col-lg-7 col-md-12 col-sm-12 p-top-30" style="float:right">
+                    <div class="newest-form row">
+                        <div class="col-sm-12 contact-form-item wow zoomIn">
+                            <img src="~/assets/img/laptops/Surface_Laptop-Go_02.jpeg" alt="newest-sale" class="img-responsive wow fadeInLeft" style="" data-wow-duration="1s" data-wow-delay="0.6s" />
+                        </div>
+                    </div> <!-- /.newest sale-form & inner row -->
+                </div> <!-- /.col -->
+                <!-- === newest sale Information === -->
+                <div class="col-lg-5 col-md-12 col-sm-12">
+                    <div class="newest-info">
+                        <!-- === Details === -->
+                        <div class="m-top-20 wow zoomIn">
+                            <div class="newest-price"> SAR 2,649.00 </div>
+                            <div class="newest-info-text">
+                                Pay 127 SAR for 36 months !
+                            </div>
+                            <a href="#" class="btn btn-main btn-theme wow fadeInUp btn-newest" data-wow-delay="0.8s">Order Now</a>
+
+                        </div>
+
+                    </div>
+                </div> <!-- /.col -->               
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </section>
+    <!-- End  New Sale -->
+    <!-- Start Stat -->
+    <section id="stat" class="parallax-bg overlay-dark p-top-80 p-bottom-40 white-color" style="background-image:url(../assets/img/bg2.jpg)" data-stellar-background-ratio="0.5">
+        <div class="container">
+            <div class="row">
+
+                <!-- === Stats Item 1 === -->
+                <div class="col-md-4 col-sm-4 p-bottom-40">
+                    <div class="stat-item stat-item-type-2 wow zoomIn" data-wow-duration="1s" data-wow-delay="0.3s">
+                        <div class="stat-item-icon">
+                            <i class="fa fa-laptop"></i>
+                        </div>
+                        <div class="stat-item-number">
+                            120
+                        </div>
+                        <div class="stat-item-text">
+                            Laptops Sold
+                        </div>
+                    </div>
+                </div> <!-- /.col -->
+                <!-- === Stats Item 2 === -->
+                <div class="col-md-4 col-sm-4 p-bottom-40">
+                    <div class="stat-item stat-item-type-2 wow zoomIn" data-wow-duration="1s" data-wow-delay="0.4s">
+                        <div class="stat-item-icon">
+                            <i class="fa fa-users"></i>
+                        </div>
+                        <div class="stat-item-number">
+                            102
+                        </div>
+                        <div class="stat-item-text">
+                            Happy Customers
+                        </div>
+                    </div>
+                </div> <!-- /.col -->
+                <!-- === Stats Item 3 === -->
+                <div class="col-md-4 col-sm-4 p-bottom-40">
+                    <div class="stat-item stat-item-type-2 wow zoomIn" data-wow-duration="1s" data-wow-delay="0.6s">
+                        <div class="stat-item-icon">
+                            <i class="fa fa-trophy"></i>
+                        </div>
+                        <div class="stat-item-number">
+                            55
+                        </div>
+                        <div class="stat-item-text">
+                            Awards Received
+                        </div>
+                    </div>
+                </div> <!-- /.col -->
+
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </section>
+    <!-- End Stat -->
+    <!-- Start Contact -->
+    <section id="contact" class="dark-bg p-top-80 p-bottom-80">
+        <div class="container">
+            <div class="row">
+                <!-- Section Title -->
+                <div class="section-title text-center m-bottom-30">
+                    <h2 class="white-color wow fadeInDown" data-wow-duration="1s" data-wow-delay="0.6s">Contact</h2>
+                    <div class="divider-center-small divider-white wow zoomIn" data-wow-duration="1s" data-wow-delay="0.6s"></div>
+                    <p class="section-subtitle wow fadeInUp" data-wow-duration="1s" data-wow-delay="0.6s"><em>You can contact us at any time you want.<br>Do not be hesitate always at your service.</em></p>
+                </div>
+                <!-- === Contact Form === -->
+                <div class="col-md-7 col-sm-7 p-bottom-30">
+                    <div class="contact-form row">
+
+                        <form name="ajax-form" id="ajax-form" action="contact.php" method="post">
+                            <div class="col-sm-6 contact-form-item wow zoomIn">
+                                <input name="name" id="name" type="text" placeholder="Your Name: *" />
+                                <span class="error" id="err-name">please enter name</span>
+                            </div>
+                            <div class="col-sm-6 contact-form-item wow zoomIn">
+                                <input name="email" id="email" type="text" placeholder="E-Mail: *" />
+                                <span class="error" id="err-email">please enter e-mail</span>
+                                <span class="error" id="err-emailvld">e-mail is not a valid format</span>
+                            </div>
+                            <div class="col-sm-12 contact-form-item wow zoomIn">
+                                <textarea name="message" id="message" placeholder="Your Message"></textarea>
+                            </div>
+                            <div class="col-sm-12 contact-form-item">
+                                <button class="send_message btn btn-main btn-theme wow fadeInUp" id="send" data-lang="en">submit</button>
+                            </div>
+                            <div class="clear"></div>
+                            <div class="error text-align-center" id="err-form">There was a problem validating the form please check!</div>
+                            <div class="error text-align-center" id="err-timedout">The connection to the server timed out!</div>
+                            <div class="error" id="err-state"></div>
+                        </form>
+
+                        <div class="clearfix"></div>
+                        <div id="ajaxsuccess">Successfully sent!!</div>
+                        <div class="clear"></div>
+
+                    </div> <!-- /.contacts-form & inner row -->
+                </div> <!-- /.col -->
+                <!-- === Contact Information === -->
+                <div class="col-md-5 col-sm-5">
+                    <address class="contact-info">
+
+
+                        <!-- === Location === -->
+                        <div class="m-top-20 wow slideInRight">
+                            <div class="contact-info-icon">
+                                <i class="fa fa-location-arrow"></i>
+                            </div>
+                            <div class="contact-info-title">
+                                Address:
+                            </div>
+                            <div class="contact-info-text">
+                                King Fahd Rd, Al Salmaniyah, Al Hofuf
                             </div>
                         </div>
 
-                    }
-                </div>
+                        <!-- === Phone === -->
+                        <div class="m-top-20 wow slideInRight">
+                            <div class="contact-info-icon">
+                                <i class="fa fa-phone"></i>
+                            </div>
+                            <div class="contact-info-title">
+                                Phone number:
+                            </div>
+                            <div class="contact-info-text">
+                                (+966) 100200311
+                            </div>
+                        </div>
 
+                        <!-- === Mail === -->
+                        <div class="m-top-20 wow slideInRight">
+                            <div class="contact-info-icon">
+                                <i class="fa fa-envelope"></i>
+                            </div>
+                            <div class="contact-info-title">
+                                Email:
+                            </div>
+                            <div class="contact-info-text">
+                                support247@support.com
+                            </div>
+                        </div>
 
-            </div>
-        </div>
-        <footer class="my-5 pt-5 text-muted text-center text-small">
-            <p class="mb-1">&copy; 2021 E-commerce Laptops</p>
+                    </address>
+                </div> <!-- /.col -->
 
-        </footer>
-    </main>
-
-
-
+            </div> <!-- /.row -->
+        </div> <!-- /.container -->
+    </section>
+    <!-- End Contact -->
 </body>
 </html>

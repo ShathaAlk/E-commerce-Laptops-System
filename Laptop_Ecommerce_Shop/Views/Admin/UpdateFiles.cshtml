@@ -1,0 +1,180 @@
+﻿@model Laptop_Ecommerce_Shop.ProductFile
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@{
+    IEnumerable<ProductFile> showImgs = ViewData["Product images"] as IEnumerable<ProductFile>;
+    IEnumerable<ProductFile> showVideos = ViewData["Product videos"] as IEnumerable<ProductFile>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Update Products</title>
+    <link href="~/assets/css/radio-style.css" rel="stylesheet" />
+    <script src="~/assets/js/preview-files.js"></script>
+</head>
+<body class="p-top-50" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+
+    <!--product single section-->
+    <section class="p-top-40 p-bottom-40 p">
+
+        <!--Container-->
+        <div class="container clearfix">
+            <h3>Update The Product</h3>   
+        <div class="form-horizontal">
+            <hr />
+           
+            <div class="col-lg-3 col-md-3 col-sm-3 m-top-50">
+                @using (Html.BeginForm("UpdateFiles", "Admin", FormMethod.Post, new { @class = "needs-validation", @novalidate = "", @enctype = "multipart/form-data" }))
+                {
+                    @Html.AntiForgeryToken()
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                <div class="form-group">
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        <h6 class="control-label col-lg-3 col-md-3 col-sm-3 p-bottom-20">Image</h6>
+                        @Html.TextBoxFor(model => model.imgFile, new { type = "file", multiple = "true", id = "imgFiles", name = "files[]", required = "" })
+                        <div class="invalid-feedback">Please upload an image.</div>
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6 text-center p-top-10">
+                        <button type="submit" class="btn" onclick="SubmitForm()">
+                            <img class="icon-cart" src="~/assets/img/icon/update.png" />
+                        </button>
+                    </div>
+                    <br />
+                    <div class="col-lg-12 col-md-12 col-sm-12 text-center p-top-20">
+                        @if (TempData["UpdateImageMessage"] != null)
+                        {
+                            <h6 style="color:forestgreen">@TempData["UpdateImageMessage"].ToString()</h6>
+                        }
+                    </div>
+                </div>
+                        }
+                @using (Html.BeginForm("UpdateVideo", "Admin", FormMethod.Post, new { @class = "needs-validation", @novalidate = "", @enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            <div class="form-group m-top-60">
+                <div class="col-lg-6 col-md-6 col-sm-6">
+                    <h6 class="control-label col-lg-3 col-md-3 col-sm-3 p-bottom-20">Video</h6>
+                    @Html.TextBoxFor(model => model.videoFile, new { type = "file", multiple = "true", id = "videoFiles", name = "files[]", required = "" })
+                    <div class="invalid-feedback">Please upload a video.</div>
+                </div>
+                <div class="col-lg-6 col-md-6 col-sm-6 text-center p-top-10">
+                    <button type="submit" class="btn" onclick="SubmitForm()">
+                        <img class="icon-cart" src="~/assets/img/icon/update.png" />
+                    </button>
+                </div>
+                <br />
+                <div class="col-lg-12 col-md-12 col-sm-12 text-center p-top-20">
+                    @if (TempData["UpdateVideoMessage"] != null)
+                    {
+                        <h6 style="color:forestgreen">@TempData["UpdateVideoMessage"].ToString()</h6>
+                    }
+                </div>
+                </div>               
+                }
+                <div>
+                    @Html.ActionLink("Back to List", "Index")
+                </div>
+            </div>
+                    <div class="col-lg-3 col-md-3 col-sm-3">
+                        <div class="form-group">
+                            <div id="imgList" class="col-lg-12 col-md-12 col-sm-12">
+                            </div>
+                            <div id="videoList" class="col-lg-12 col-md-12 col-sm-12">
+                            </div>
+                        </div>
+                        <div class="form-group">                            
+                        </div>
+
+                    </div>
+                    <div class="col-lg-6 col-md-6 col-sm-6">
+                        @using (Html.BeginForm("SelectingMainImage", "Admin", FormMethod.Post, new { @class = "needs-validation", @novalidate = "", @enctype = "multipart/form-data" }))
+                        {
+                            @Html.AntiForgeryToken()
+
+                        <div class="row">
+                           
+                            <div class="col-lg-12 col-md-12 col-sm-12">
+                                <!--Post-->
+                                <div class="postSingle">
+                                    <div class="postMedia m-bottom-20">
+                                        <div id="owl-files" class="owl-carousel owl-theme text-center">
+                                            @foreach (var imgs in showImgs)
+                                            {
+                                                var imgBase64 = Convert.ToBase64String(imgs.FileContent);
+                                                var imgsrc = string.Format("data:image/gif;base64,{0}", imgBase64);
+                                            <div>
+                                               
+                                                <div class="row">
+                                                    <div class="float-container">
+
+                                                        <div class="float-child">
+                                                            <div class="green"><h6>Select The main Image</h6></div>
+                                                        </div>
+
+                                                        <div class="float-child">
+                                                            <div class="blue">
+                                                                <input type="submit" value="Done" class="btn btn-main btn-theme" onclick="SubmitForm()" />                                                               
+                                                            </div>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+
+
+                                                @if (TempData["UpdateMessage"] != null)
+                                                {
+                                                    <label class="m-top-10" style="color:forestgreen">@TempData["UpdateMessage"].ToString()</label>
+                                                }
+                                                @if (TempData["UpdateDefaultMessage"] != null)
+                                                {
+                                                    <label class="m-top-10" style="color:red">@TempData["UpdateDefaultMessage"].ToString()</label>
+                                                }
+                                                <label class="radio-style">
+
+                                                    @Html.RadioButton("SelectedValue", imgs.FileID, new { htmlAttributes = new { @class = "form-control", @Required = "" } })
+                                                    <span> </span>
+                                                    <img alt="" src='@imgsrc'>
+                                                </label>
+                                            </div>
+                                            }
+
+                                        </div>
+                                    </div><!--Post image-->
+
+                                    @foreach (var videos in showVideos)
+                                    {
+                                        if (videos.FileContent != null)
+                                        {
+                                            var vidBase64 = Convert.ToBase64String(videos.FileContent);
+                                            var vidsrc = string.Format("data:video/mp4;base64,{0}", vidBase64);
+
+                                            <div class="postMedia">
+                                                <video style="width:100%; height:auto;" controls>
+                                                    <source src='@vidsrc' type="video/mp4" />
+                                                </video>
+                                            </div><!--Post image-->
+                                        }
+                                    }
+
+                                </div>
+                                <!--End post-->
+                            </div> <!-- /.col -->
+                        </div> <!-- /.row -->
+                        }
+                    </div>
+                </div>
+        </div>
+    </section>
+    <script>
+        document.getElementById('imgFiles').addEventListener('change', imagePreview, false);
+        document.getElementById('videoFiles').addEventListener('change', videoPreview, false);
+    </script>
+</body>
+</html>
+
+

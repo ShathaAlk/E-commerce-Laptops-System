@@ -20,9 +20,7 @@ namespace Laptop_Ecommerce_Shop
         public Nullable<int> Quantity { get; set; }
         public Nullable<int> Purchased { get; set; }
         public Nullable<int> OrderID { get; set; }
-
-        public Nullable<double> TotalPricePerItem { get { return (double)Quantity * ProductItem.Price; } }
-
+    
         public virtual Customer Customer { get; set; }
         public virtual Order Order { get; set; }
         public virtual ProductItem ProductItem { get; set; }

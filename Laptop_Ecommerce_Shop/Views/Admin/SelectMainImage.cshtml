@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Laptop_Ecommerce_Shop.ProductFile>
+
+@{
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+@{
+    IEnumerable<ProductFile> showImgs = ViewData["Product images"] as IEnumerable<ProductFile>;
+    IEnumerable<ProductFile> showVideos = ViewData["Product videos"] as IEnumerable<ProductFile>;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Select The Main Image</title>
+    <link href="~/assets/css/radio-style.css" rel="stylesheet" />
+</head>
+<body class="p-top-50" data-spy="scroll" data-target=".navbar-fixed-top" data-offset="100">
+    <!--product single section-->
+    <section id="product-single" class="p-top-20 p-bottom-80 text-center" >
+        <!--Container-->
+        <div class="container clearfix">
+            @using (Html.BeginForm("SelectingMainImage", "Admin", FormMethod.Post, new { @class = "needs-validation", @novalidate = "", @enctype = "multipart/form-data" }))
+            {
+                @Html.AntiForgeryToken()
+            <div class="row">             
+                <div class="col-lg-7 col-md-7 col-sm-12 p-top-20">
+                    <!--Post-->
+                    <div class="postSingle">
+                        <div class="postMedia m-bottom-20">
+                            <div id="owl-files" class="owl-carousel owl-theme text-center">
+                                @foreach (var imgs in showImgs)
+                                {
+                                    var imgBase64 = Convert.ToBase64String(imgs.FileContent);
+                                    var imgsrc = string.Format("data:image/gif;base64,{0}", imgBase64);
+                                    <div>
+
+                                        <div class="row">
+                                            <div class="float-container">
+
+                                                <div class="float-child">
+                                                    <div class="green"><h6>Select The main Image</h6></div>
+                                                </div>
+
+                                                <div class="float-child">
+                                                    <div class="blue">
+                                                        <input type="submit" value="Done" class="btn btn-main btn-theme" onclick="SubmitForm()" />
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+
+
+                                        @*@if (TempData["UpdateMessage"] != null)
+                                        {
+                                            <label class="m-top-10" style="color:forestgreen">@TempData["UpdateMessage"].ToString()</label>
+                                        }
+                                        @if (TempData["UpdateDefaultMessage"] != null)
+                                        {
+                                            <label class="m-top-10" style="color:red">@TempData["UpdateDefaultMessage"].ToString()</label>
+                                        }*@
+                                        <label class="radio-style">
+
+                                            @Html.RadioButton("SelectedValue", imgs.FileID, new { htmlAttributes = new { @class = "form-control", @Required = "" } })
+                                            <span> </span>
+                                            <img alt="" src='@imgsrc'>
+                                        </label>
+                                    </div>
+                                }
+
+                            </div>
+                        </div><!--Post image-->
+
+                        @foreach (var videos in showVideos)
+                        {
+                            if (videos.FileContent != null)
+                            {
+                                var vidBase64 = Convert.ToBase64String(videos.FileContent);
+                                var vidsrc = string.Format("data:video/mp4;base64,{0}", vidBase64);
+
+                                <div class="postMedia">
+                                    <video style="width:100%; height:auto;" controls>
+                                        <source src='@vidsrc' type="video/mp4" />
+                                    </video>
+                                </div><!--Post image-->
+                            }
+                        }
+
+                    </div>
+                    <!--End post-->
+                </div> <!-- /.col -->
+
+            </div> <!-- /.row -->
+            }
+        </div> <!-- /.container -->
+    </section><!--End product single section-->
+    <!-- Start Intro -->
+    <!-- End Intro -->
+</body>
+</html>
+
+
