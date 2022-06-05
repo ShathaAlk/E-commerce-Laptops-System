@@ -31,7 +31,7 @@ The admin can update the text data and files (images/videos).
 </div>
 </br>
 
-<div align="center">
+<div>
    <img src="https://user-images.githubusercontent.com/58560808/172043105-015ac867-f009-4b49-863f-2446fdcd6563.gif" width="450" height="250">
    <img src="https://user-images.githubusercontent.com/58560808/172043107-8b6ded15-54f7-4235-8379-349cdd6f4f03.gif" width="450" height="250">
 </div>
@@ -43,7 +43,7 @@ Here we can see the product details and the page for deleting the product.
 </div>
 </br>
 
-<div align="center">
+<div>
      <img src="https://user-images.githubusercontent.com/58560808/172043244-6aa0e41d-32f3-45b7-a8e4-7dcc8ce23eeb.gif" width="450" height="250">
    <img src="https://user-images.githubusercontent.com/58560808/172038085-273f1377-9140-4e24-ba9d-24b3affda8ed.png" width="450" height="250">
 </div>
