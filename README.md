@@ -4,6 +4,7 @@ edit and delete laptop products, allowing customers to purchase the available la
 </br>
 - :star2: Website Link: https://aromalaptopshop.azurewebsites.net/
 </br>
+
  https://user-images.githubusercontent.com/58560808/172035905-4d287b83-6550-4ef4-b26d-9fd415a5ed81.mp4
  
  ### Admin Interface
