@@ -2,6 +2,8 @@
 <b>E-commerce Laptops System</b> is an ASP.NET MVC web application that allows the administrator to add, 
 edit and delete laptop products, allowing customers to purchase the available laptops on the website.
 
+- :star2: Website Link: https://aromalaptopshop.azurewebsites.net/
+
  https://user-images.githubusercontent.com/58560808/172035905-4d287b83-6550-4ef4-b26d-9fd415a5ed81.mp4
  
  ### Admin Interface
